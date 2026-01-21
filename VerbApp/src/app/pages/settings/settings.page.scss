@@ -1,0 +1,129 @@
+
+
+.icon-form-field {
+  position: relative;
+  display: flex;
+
+}
+
+h6,h2{
+    // padding: 15px 10px !important;
+    text-align: center;
+    margin-top: 5px !important;
+}
+
+.logo{
+    padding: 15px !important;
+    margin: auto;
+    display: block;
+
+}
+
+
+ion-content{
+    --ion-background-color: var(--ion-color-background) !important;
+    // --ion-background-color: transparent !important;
+    
+    
+}
+
+
+ion-grid {
+  padding: 8px !important;   
+  padding-bottom: 16px !important;
+}
+
+ion-content.background,
+ion-grid,
+ion-row,
+ion-col {
+  height: 100%;     
+  margin: 0;
+  padding: 0;
+}
+
+ion-col {
+  display: flex;
+  flex-direction: column; 
+  position: relative;
+}
+
+.voice-icon-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0; 
+}
+
+.person-icon {
+  font-size: 48px;
+  color: #3880ff;          
+  background: var(--ion-color-background) !important;   
+  border-radius: 50%;
+  display: block;
+  padding:2px;
+}
+
+.volume-overlay {
+  position: absolute;
+  top: 10px;       
+  right: -10px;    
+  font-size: 18px;
+  color: var(--ion-color-background) !important;;   
+  background: #3880ff; 
+  border-radius: 50%;
+  padding: 2px;
+}
+
+.voice-select {
+  display: flex;
+  align-items: center;   
+  gap: 12px;             
+}
+
+.button {
+  display: inline-flex;
+  align-self: flex-end;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 4px;
+  transition: all 0.1s ease-in-out;
+
+  &:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px;
+  }
+}
+
+#signout {
+  background-color: #ff3b30;
+  color: white;
+  margin-top: auto;
+
+  box-shadow: #b02a22;
+}
+
+#signin {
+  background-color: blue;
+  color: white;
+  box-shadow: darkblue;
+}
+
+
+
+
+
+
+
+
+
+
+
+
