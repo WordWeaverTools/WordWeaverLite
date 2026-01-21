@@ -11,11 +11,13 @@
     </ion-tab-button>
 
     <ion-tab-button tab="instructions">
-      <ion-label>How To Use</ion-label>
+      <ion-label>Info</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button *ngIf="requiresAuth" tab="profile">
-      <ion-label>Profile</ion-label>
+    <ion-tab-button *ngIf="requiresAuth" tab="settings">
+      <ion-label>Settings</ion-label>
     </ion-tab-button>
 
   </ion-tab-bar>
+
+  </ion-tabs>
