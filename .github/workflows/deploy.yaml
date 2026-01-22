@@ -34,7 +34,7 @@ jobs:
           cd ../VerbApp
           npm install --force
           npm install -g ionic --force
-          ionic build --prod -- --deploy-url /BQWordWeaverLite/ --base-href /BQWordWeaverLite/ 
+          ionic build --prod -- --deploy-url /BQWordWeaverLite/ --base-href /BQWordWeaverLite/ --output-path=../www
 
 
 
