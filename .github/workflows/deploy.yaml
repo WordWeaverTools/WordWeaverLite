@@ -30,8 +30,8 @@ jobs:
           pip install -r requirements.txt
           python src/main.py -f ../Data/inputfile.csv -o ../Data/order.csv -tt -c --auto-place
           cd ../VerbApp
-          npm install
-          npm install -g ionic
+          npm install --force
+          npm install -g ionic --force
           ionic build --prod -- --base-href ./ --output-path=../deploy/
 
 
