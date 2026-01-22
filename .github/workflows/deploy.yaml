@@ -43,3 +43,4 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           folder: www # The folder the action should deploy.
+          clean: true
