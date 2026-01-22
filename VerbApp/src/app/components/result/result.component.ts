@@ -13,7 +13,7 @@ import {
 
  import { EveryVoiceService } from "@everyvoice/every-voice";
 
- import { AudioService } from '../../services/audio/audio.service';
+//  import { AudioService } from '../../services/audio/audio.service';
 
 @Component({
   selector: 'app-result',
@@ -29,12 +29,8 @@ export class ResultComponent implements OnInit {
 
   output: Result;
   morphType: number;
-  audioExists: boolean = true;
-  audioPath: string;
   rawText: string;
-
-
-  constructor(private audio_service: AudioService, public tts: EveryVoiceService) { }
+  constructor(public tts: EveryVoiceService) { }
 
   ngOnInit(): void {
     // Filter empty values and sort on position
@@ -45,10 +41,6 @@ export class ResultComponent implements OnInit {
     console.log("this.rawText",this.rawText);
     }
 
-    audio(){
-      console.log("playing audio");
-      this.tts.playSound$(this.rawText).subscribe();
-      
-    }
+
 
 }

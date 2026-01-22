@@ -2,8 +2,6 @@ import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
 
 import { TabsPage } from "./tabs.page";
-import { AuthGuard } from "@auth0/auth0-angular";
-import { UserProfileComponent } from "../../components/profile/profile.component";
 import { environment } from "../../../environments/environment";
 
 const routes: Routes = [
@@ -30,6 +28,13 @@ const routes: Routes = [
             (m) => m.InstructionsPageModule
           ),
       },
+      {
+        path: "settings",
+        loadChildren: () =>
+          import("../settings/settings.module").then(
+            (m) => m.SettingsPageModule
+          ),
+      },
     ],
   },
   {
@@ -39,13 +44,7 @@ const routes: Routes = [
   },
 ];
 
-if (environment.ttsConfig.requiresAuth) {
-  routes[0].children.push({
-    path: "profile",
-    component: UserProfileComponent,
-    canActivate: [AuthGuard],
-  });
-}
+
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
