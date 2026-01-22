@@ -11,7 +11,7 @@ export const everyVoiceConfig: EveryVoiceConfig = {
   domain: "unbq-everyvoice.ca.auth0.com", // Optional: Auth0 Domain
   // domain: "dev-qioor1nubb5vu3uw.ca.auth0.com",
   clientId: "7jLB2de2XqEGsAbXLEnUjB49P35r8gQH", // Optional: Auth0 ClientId
-  // middlewareEndpoint: "http://localhost:3000/tts", // Optional: Middleware endpoint
+  middlewareEndpoint: "https://unbq-crk-tts-middleware-ee6d73382adb.herokuapp.com/tts", // Optional: Middleware endpoint
   audience: "https://unbq.everyvoice.middleware.ca", // Optional: Auth0 audience
   // audience: "test-middleware",
 }
