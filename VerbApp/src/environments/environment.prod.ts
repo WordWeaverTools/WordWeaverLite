@@ -8,7 +8,7 @@ export const everyVoiceConfig: EveryVoiceConfig = {
   availableSpeakers: [{ display: "Tina", slug: "tina" }, {display: "Wayne", slug: "wayne"}], // Optional: Available Speaker IDs for TTS
   defaultSpeaker: { display: "Tina", slug: "tina" }, // Optional: Speaker ID for TTS
   diffusionSteps: 3, // Optional: Number of steps for TTS
-  domain: "unbq-crk-everyvoice.ca.auth0.com", // Optional: Auth0 Domain
+  domain: "unbq-everyvoice.ca.auth0.com", // Optional: Auth0 Domain
   // domain: "dev-qioor1nubb5vu3uw.ca.auth0.com",
   clientId: "7jLB2de2XqEGsAbXLEnUjB49P35r8gQH", // Optional: Auth0 ClientId
   // middlewareEndpoint: "http://localhost:3000/tts", // Optional: Middleware endpoint
