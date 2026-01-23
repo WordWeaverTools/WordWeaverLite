@@ -156,7 +156,7 @@
                         *ngIf="auth.isAuthenticated$ | async"
                         class="button"
                         id="signout"
-                        (click)="auth.logout({ logoutParams: { returnTo: document.location.origin } })">
+                        (click)="logout()">
                         <ion-icon class="button-icon" name="log-out-outline"
                             size="large"></ion-icon>
                         Sign out
