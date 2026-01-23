@@ -65,6 +65,10 @@ export class SettingsPage implements OnInit {
   }
 
   logout(){
+    console.log(
+      'LOGOUT Registered redirect_uri:',
+      this.authConfig.get()?.authorizationParams?.redirect_uri
+    );
     this.auth.logout({ logoutParams: { returnTo: this.authConfig.get()?.authorizationParams?.redirect_uri } });
   }
 
