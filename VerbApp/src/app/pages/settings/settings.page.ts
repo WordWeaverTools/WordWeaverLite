@@ -64,6 +64,10 @@ export class SettingsPage implements OnInit {
     this.auth.loginWithRedirect();
   }
 
+  logout(){
+    this.auth.logout({ logoutParams: { returnTo: this.authConfig.get()?.authorizationParams?.redirect_uri } });
+  }
+
   ttsSpeakerChange(event: any) {
     const speaker: Speaker = event.detail.value;
     this.tts.speakerID = speaker;
