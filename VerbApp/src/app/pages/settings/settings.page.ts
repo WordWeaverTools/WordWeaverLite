@@ -5,6 +5,7 @@ import { Router } from "@angular/router";
 import { EveryVoiceService } from "@everyvoice/every-voice";
 import { Speaker } from "@everyvoice/every-voice";
 import { environment } from "../../../environments/environment";
+import { AuthClientConfig } from '@auth0/auth0-angular';
 
 @Component({
   selector: "app-settings",
@@ -20,12 +21,17 @@ export class SettingsPage implements OnInit {
 
   constructor(
     public auth: AuthService,
+    private authConfig: AuthClientConfig,
     private router: Router,
     public tts: EveryVoiceService,
     @Inject(DOCUMENT) public document: Document,
   ) {}
 
   ngOnInit() {
+    console.log(
+      'Registered redirect_uri:',
+      this.authConfig.get()?.authorizationParams?.redirect_uri
+    );
     window.addEventListener("beforeinstallprompt", (e: any) => {
       console.log("beforeinstallprompt event fired", e);
       e.preventDefault();
