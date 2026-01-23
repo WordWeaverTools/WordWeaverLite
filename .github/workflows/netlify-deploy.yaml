@@ -1,5 +1,5 @@
 name: Deploy to Netlify
-run-name: "Deploy to Netlify- ${{ github.ref_name }}
+run-name: "Deploy to Netlify- ${{ github.ref_name }}"
 
 on:
   workflow_run:
