@@ -38,7 +38,7 @@ jobs:
           ionic build --prod -- --deploy-url /BQWordWeaverLite/ --base-href /BQWordWeaverLite/ --output-path=../www
 
       - name: Upload generated files as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: site-files
           path: www/
