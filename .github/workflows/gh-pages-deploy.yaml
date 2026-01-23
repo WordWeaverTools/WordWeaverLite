@@ -1,11 +1,10 @@
 # template from https://github.com/JamesIves/github-pages-deploy-action/tree/dev
 
-name: Deployment
+name: GHPagesDeployment
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+    
 
 jobs:
   build-and-deploy:
