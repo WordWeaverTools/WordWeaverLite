@@ -1,0 +1,32 @@
+name: Deploy to Netlify
+
+on:
+  workflow_run:
+    workflows: ["Preprocess Data & Build"]
+    types:
+      - completed
+
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Download preprocessed files
+        uses: actions/download-artifact@v3
+        with:
+          name: site-files
+          path: www/
+
+      - name: Deploy to Netlify
+        uses: nwtgck/actions-netlify@v3
+        with:
+          publish-dir: ./www
+          production-branch: main
+          branch: ${{ github.event.workflow_run.head_branch }}
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}

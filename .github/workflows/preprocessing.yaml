@@ -1,13 +1,15 @@
-# template from https://github.com/JamesIves/github-pages-deploy-action/tree/dev
 
-name: Deploy to Github Pages
+name: Preprocess Data & Build
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - deploy-preview  # add other branches as needed
     
 
 jobs:
-  build-and-deploy:
+  preprocess-and-build:
     #concurrency: ci-${{ github.ref }} # Recommended if you intend to make multiple deployments in quick succession.
     runs-on: ubuntu-latest
     permissions:
@@ -35,11 +37,8 @@ jobs:
           npm install -g ionic --force
           ionic build --prod -- --deploy-url /BQWordWeaverLite/ --base-href /BQWordWeaverLite/ --output-path=../www
 
-
-
-      - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@v4
+      - name: Upload generated files as artifact
+        uses: actions/upload-artifact@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          folder: www # The folder the action should deploy.
-          clean: true
+          name: site-files
+          path: www/
