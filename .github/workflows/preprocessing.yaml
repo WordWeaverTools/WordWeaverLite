@@ -1,5 +1,5 @@
 
-name: Preprocess Data & Build
+name: "Preprocess Data & Build - ${{ github.ref_name }} (${{github.event.head_commit.message}})"
 
 on:
   push:
@@ -35,7 +35,7 @@ jobs:
           cd ../VerbApp
           npm install --force
           npm install -g ionic --force
-          ionic build --prod -- --deploy-url /BQWordWeaverLite/ --base-href /BQWordWeaverLite/ --output-path=../www
+          ionic build --prod -- --deploy-url / --base-href / --output-path=../www
 
       - name: Upload generated files as artifact
         uses: actions/upload-artifact@v4
