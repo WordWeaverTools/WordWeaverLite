@@ -118,8 +118,26 @@ export class ConjugatorPage implements OnInit {
     }
     else{
       this.updateInformation(index+1, pos);
+      selected = this.skipSingleItemCat(index+1)
+      if (selected){
+        pos = this.information[index + 1].name;
+        this.updatePath(pos,index+1,selected);
+        this.updateDisabled(pos, index+1)
+      } 
     }
     
+  }
+
+    skipSingleItemCat(index){
+    let id = this.information[index].name;
+    if (this.information[index].cat.length == 1){
+      let tempinfo = this.information[index].cat[0]
+      this.selectedOptions[id].translation = tempinfo.translation;
+      this.selectedOptions[id].id = tempinfo.id;
+      this.selectedOptions[id].base = tempinfo.base;
+      return this.selectedOptions[id];
+    }
+    return false;
   }
 
 
@@ -224,11 +242,16 @@ export class ConjugatorPage implements OnInit {
 
 
   async openModalSearch(whichSearch, index) {
+    let hasAudio: boolean = false;
+    if (whichSearch == "verb"){
+      hasAudio = true;
+    }
     const modal = await this.modalController.create({
       component: SearchPage,
       componentProps: {
         'conj_type':whichSearch,
-        'options':this.information[index].cat
+        'options':this.information[index].cat,
+        'hasAudio': hasAudio
       }
     });
 

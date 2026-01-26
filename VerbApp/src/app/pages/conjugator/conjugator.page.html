@@ -4,7 +4,7 @@
     <ion-row class="ion-no-margin ion-no-padding">
       <ion-col class="ion-no-margin ion-no-padding ion-text-center" size-sm="8" offset-sm="2" size-md="6" offset-md="3" size-xl="4" offset-xl="4">
 
-        <ion-card *ngFor="let item of information; let i = index;" [class.active]="currentIndex == i" color="{{item.name}}" lines="none" detail="false" disabled="{{item.disabled}}" no-padding>
+        <ion-card *ngFor="let item of information; let i = index;" [class.active]="currentIndex == i" (click)="openModalSearch(item.name, i)"  color="{{item.name}}" lines="none" detail="false" disabled="{{item.disabled}}" no-padding>
           <!-- <div *ngSwitchCase="item.cat.length > 10 && item.name != 'verb'"> -->
           <div>
           <ion-card-content id="{{item.name}}">
@@ -20,7 +20,7 @@
             </ion-item>
           </ion-card-content>
 
-          <ion-item (click)="openModalSearch(item.name, i)"  color="{{item.name}}" class="selected" disabled="{{item.disabled}}">
+          <ion-item color="{{item.name}}" class="selected" disabled="{{item.disabled}}">
             <div class="overlapping" slot="end" style="margin-left: 10px;">  
               <!-- <fa-icon [icon]="['fas', 'magnifying-glass']" class="search-icon" color="{{item.name}}"></fa-icon> -->
               <!-- <ion-icon class ="bottom" name="search-circle-sharp"></ion-icon>

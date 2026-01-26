@@ -17,6 +17,8 @@ export class SettingsPage implements OnInit {
   deferredPrompt: any;
   showInstallButton: Boolean = false;
   browser: String = "";
+  loginError?: string;
+  logoutError?: string;
 
   constructor(
     public auth: AuthService,
@@ -55,7 +57,18 @@ export class SettingsPage implements OnInit {
   }
 
   login() {
-    this.auth.loginWithRedirect();
+    this.auth.loginWithRedirect({
+      appState: { target: '/tabs/settings'}
+    }).subscribe({
+      error: (err) => {
+        this.loginError =
+          err?.error_description || err?.message || 'Login failed. Try again.';
+        }
+      });
+    }
+
+  logout() {
+    this.auth.logout({ logoutParams: { returnTo: document.location.origin + '/auth-callback' } })
   }
 
   ttsSpeakerChange(event: any) {

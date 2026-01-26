@@ -2,6 +2,8 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ModalController, Platform } from '@ionic/angular';
 import * as Information from '../../../assets/JSON/information.json';
 import { VerbTooltipPage } from '../../modals/verb-tooltip/verb-tooltip.page';
+ import { EveryVoiceService } from "@everyvoice/every-voice";
+ 
 
 
 @Component({
@@ -21,11 +23,13 @@ export class SearchPage implements OnInit {
   img = ''
   @Input() public conj_type: string;
   @Input() public options: any[];
+  @Input() hasAudio = false;
+  rawText: string;
   items_total = Information['default'];
   items = [];
   myColor = '#006400';
 
-  constructor(private modalController: ModalController) {}
+  constructor(private modalController: ModalController, public tts: EveryVoiceService) {}
 
   ngOnInit() {
 
@@ -40,12 +44,7 @@ export class SearchPage implements OnInit {
   }
   // Plays the corresponding sound for a term
   playSound(event){
-    // event.preventDefault();
-    event.stopPropagation();
-    let audio = new Audio();
-    audio.src = "../../../assets/audio/boing.wav"
-    audio.load();
-    audio.play();
+    this.rawText = event;
   }
   
   // Logs clicked verb

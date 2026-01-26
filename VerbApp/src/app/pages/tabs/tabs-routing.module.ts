@@ -38,6 +38,11 @@ const routes: Routes = [
     ],
   },
   {
+    path: "auth-callback",
+    redirectTo: "/tabs/settings",
+    pathMatch: "full",
+  },
+  {
     path: "",
     redirectTo: "/tabs/conjugator",
     pathMatch: "full",

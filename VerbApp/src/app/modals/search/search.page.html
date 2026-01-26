@@ -3,34 +3,44 @@
   <ion-toolbar color="{{conj_type}}">
     <ion-buttons slot="primary">
       <ion-button (click)="openModalToolTip(conj_type)">
-        <ion-icon slot="icon-only" name="help-circle" class="help-icon">Open Help Modal</ion-icon>
+        <ion-icon slot="icon-only" name="help-circle" class="help-icon">Open
+          Help Modal</ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title class="ion-no-padding" text-center>Choose a {{conj_type | titlecase}}</ion-title>
+    <ion-title class="ion-no-padding" text-center>Choose a {{conj_type |
+      titlecase}}</ion-title>
   </ion-toolbar>
-  <ion-searchbar (keyup) = getResults($event) autocapitalize="none" show-cancel="true" class="ion-no-padding" color="white"></ion-searchbar>
+  <ion-searchbar (keyup)=getResults($event) autocapitalize="none"
+    show-cancel="true" class="ion-no-padding" color="white"></ion-searchbar>
 </ion-header>
 
 <ion-content color="black">
   <ion-list class="body" color="white" lines="full" [inset]="true">
-    <ion-item button (click)=selectItem(item) class="entry" color="white" *ngFor='let item of matches' detail="false" [class.active-item] = "selectedItemID === item.id">
+    <ion-item button (click)=selectItem(item) class="entry" color="white"
+      *ngFor='let item of matches' detail="false"
+      [class.active-item]="selectedItemID === item.id">
       <div class=right>
         <div class="text-with-audio">
-          <ion-label class="ion-text-wrap top" color="{{item.type_color}}">{{item.base}}</ion-label> 
+          <ion-label class="ion-text-wrap top"
+            color="{{item.type_color}}">{{item.base}}</ion-label>
           <!-- <fa-icon *ngIf="item.base" [icon]="['fas', 'volume-high']" class="audio-icon" background-color="{{item.type_color}}" (click)="playSound($event)"></fa-icon> -->
-          <ion-icon *ngIf="item.base" name="volume-high" class="audio-icon" (click)="playSound($event)">Play Sound</ion-icon>
+          <!-- <ion-icon *ngIf="item.base" name="volume-high" class="audio-icon"
+            (click)="playSound(item.base)">Play Sound</ion-icon>
+
+          <lib-every-voice
+            *ngIf="hasAudio"
+            [textToGenerate]="rawText"></lib-every-voice> -->
         </div>
-        <ion-label class="ion-text-wrap bottom" color="{{item.type_color}}">{{item.translation}}</ion-label>
+        <ion-label class="ion-text-wrap bottom"
+          color="{{item.type_color}}">{{item.translation}}</ion-label>
       </div>
     </ion-item>
   </ion-list>
 </ion-content>
 
-
 <ion-footer class="footer">
   <!-- <div class="btn-wrapper"> -->
 
-    <ion-button class="cancel" (click)="closeModal()">Cancel</ion-button>
+  <ion-button class="cancel" (click)="closeModal()">Cancel</ion-button>
   <!-- </div> -->
 </ion-footer>
-
