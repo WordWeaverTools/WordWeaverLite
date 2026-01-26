@@ -18,6 +18,10 @@ const routes: Routes = [
     path: 'search',
     loadChildren: () => import('./modals/search/search.module').then( m => m.SearchPageModule)
   },
+  // {
+  //   path: "auth-callback", // Handle Auth0 redirect with errors here
+  //   loadChildren: () => import('./pages/settings/settings.module').then(m => m.SettingsPageModule),
+  // },
 
 ];
 

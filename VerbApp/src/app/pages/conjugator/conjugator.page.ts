@@ -224,11 +224,16 @@ export class ConjugatorPage implements OnInit {
 
 
   async openModalSearch(whichSearch, index) {
+    let hasAudio: boolean = false;
+    if (whichSearch == "verb"){
+      hasAudio = true;
+    }
     const modal = await this.modalController.create({
       component: SearchPage,
       componentProps: {
         'conj_type':whichSearch,
-        'options':this.information[index].cat
+        'options':this.information[index].cat,
+        'hasAudio': hasAudio
       }
     });
 

@@ -16,7 +16,7 @@ import { environment } from "src/environments/environment";
       clientId: environment.ttsConfig.clientId,
       authorizationParams: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        redirect_uri: window.location.origin,
+        redirect_uri: `${window.location.origin}/auth-callback`,
         audience: environment.ttsConfig.audience,
       },
     }),
