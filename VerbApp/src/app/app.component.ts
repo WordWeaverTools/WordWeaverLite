@@ -1,5 +1,4 @@
 import { Component } from "@angular/core";
-
 import { Platform } from "@ionic/angular";
 import { SplashScreen } from "@awesome-cordova-plugins/splash-screen/ngx";
 import { StatusBar } from "@awesome-cordova-plugins/status-bar/ngx";
@@ -13,7 +12,7 @@ import { environment } from "../environments/environment";
   styleUrls: ["app.component.scss"],
 })
 export class AppComponent {
-  requiresAuth: boolean;
+  requiresAuth: boolean = environment.ttsConfig.requiresAuth;
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
@@ -26,7 +25,6 @@ export class AppComponent {
 
   initializeApp() {
     // Authentication
-    this.requiresAuth = environment.ttsConfig.requiresAuth;
     if (this.requiresAuth) {
       this.authService.isAuthenticated$.subscribe((isAuthenticated) => {
         this.tts.ttsEnabledAndAuthenticated$.next(isAuthenticated);
