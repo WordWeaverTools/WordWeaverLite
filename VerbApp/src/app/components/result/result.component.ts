@@ -1,19 +1,18 @@
-import { 
-  Component, 
-  OnInit, 
+import {
+  Component,
+  OnInit,
   ChangeDetectionStrategy,
   Input
- } from '@angular/core';
+} from '@angular/core';
 
- import{
-  Result, 
+import {
+  Result,
   ResultMorphemeNameIndex,
   Tier,
- } from "../../models/result.model";
+} from "../../models/result.model";
 
- import { EveryVoiceService } from "@everyvoice/every-voice";
+import { EveryVoiceService } from "@everyvoice/every-voice";
 
-//  import { AudioService } from '../../services/audio/audio.service';
 
 @Component({
   selector: 'app-result',
@@ -23,23 +22,20 @@ import {
 })
 export class ResultComponent implements OnInit {
 
-  @Input() data: Result;
-  @Input() tier: Tier;
+  @Input() data!: Result;
+  @Input() tier!: Tier;
   @Input() hasAudio = false;
 
-  output: Result;
-  morphType: number;
-  rawText: string;
+  output: Result = [];
+  morphType: number = ResultMorphemeNameIndex.breakdown;
+  rawText: string = "";
   constructor(public tts: EveryVoiceService) { }
 
   ngOnInit(): void {
-    // Filter empty values and sort on position
-    this.morphType = ResultMorphemeNameIndex.breakdown;
-    this.output = this.data;
-    console.log("this.output", this.output);
-    this.rawText = this.output.map((m) => m[ResultMorphemeNameIndex.value]).join("");
-    console.log("this.rawText",this.rawText);
-    }
+    console.log("this.data", this.data);
+    this.rawText = this.data.map((m) => m[ResultMorphemeNameIndex.value]).join("");
+    console.log("this.rawText", this.rawText);
+  }
 
 
 

@@ -1,5 +1,5 @@
 <ng-container>
-  <ng-container *ngFor="let morpheme of output; last as isLast">
+  <ng-container *ngFor="let morpheme of data; last as isLast">
     <span [ngClass]="morpheme[morphType]"><ion-text
         color="{{morpheme[morphType]}}">{{ morpheme[tier.key]
         }}</ion-text></span>
