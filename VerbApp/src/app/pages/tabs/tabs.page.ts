@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { environment } from "src/environments/environment";
+import { environment } from "../../../environments/environment";
 
 @Component({
   selector: "app-tabs",
@@ -8,7 +8,7 @@ import { environment } from "src/environments/environment";
 })
 export class TabsPage implements OnInit {
   requiresAuth = environment.ttsConfig.requiresAuth;
-  constructor() {}
+  constructor() { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 }
