@@ -2,86 +2,99 @@
 
   <ion-grid class="ion-no-margin ion-no-padding justify-content-center">
     <ion-row class="ion-no-margin ion-no-padding">
-      <ion-col class="ion-no-margin ion-no-padding ion-text-center" size-sm="8" offset-sm="2" size-md="6" offset-md="3" size-xl="4" offset-xl="4">
+      <ion-col class="ion-no-margin ion-no-padding ion-text-center" size-sm="8"
+        offset-sm="2" size-md="6" offset-md="3" size-xl="4" offset-xl="4">
 
-        <ion-card *ngFor="let item of information; let i = index;" [class.active]="currentIndex == i" (click)="openModalSearch(item.name, i)"  color="{{item.name}}" lines="none" detail="false" disabled="{{item.disabled}}" no-padding>
+        <ion-card *ngFor="let item of information; let i = index;"
+          [class.active]="currentIndex == i"
+          (click)="openModalSearch(item.name, i)" color="{{item.name}}"
+          lines="none" detail="false" disabled="{{item.disabled}}" no-padding>
           <!-- <div *ngSwitchCase="item.cat.length > 10 && item.name != 'verb'"> -->
           <div>
-          <ion-card-content id="{{item.name}}">
-            <ion-item color="{{item.name}}" lines="none">
-              <!-- <div id=alltooltip class="overlapping" style="margin-right: 10px;">
+            <ion-card-content id="{{item.name}}">
+              <ion-item color="{{item.name}}" lines="none">
+                <!-- <div id=alltooltip class="overlapping" style="margin-right: 10px;">
                 <ion-icon  id="tooltip" class ="bottom" name="help-circle-sharp" ></ion-icon>
                 <ion-icon (click)="openModalToolTip(item.name)" class ="top" name="help-circle-outline" ></ion-icon>
               </div> -->
-              <div class="titlecard">
-                <ion-text [class.active]="currentIndex == i">Choose a </ion-text>
-                <ion-card-title [class.active]="currentIndex == i" [class.chosen]="currentIndex > i" class="title">{{item.name | titlecase}}</ion-card-title>
+                <div class="titlecard">
+                  <ion-text [class.active]="currentIndex == i">Choose a
+                  </ion-text>
+                  <ion-card-title [class.active]="currentIndex == i"
+                    [class.chosen]="currentIndex > i" class="title">{{item.name
+                    | titlecase}}</ion-card-title>
+                </div>
+              </ion-item>
+            </ion-card-content>
+
+            <ion-item color="{{item.name}}" class="selected"
+              disabled="{{item.disabled}}">
+              <div class="overlapping" slot="end" style="margin-left: 10px;">
+                <!-- <fa-icon [icon]="['fas', 'magnifying-glass']" class="search-icon" color="{{item.name}}"></fa-icon> -->
+                <!-- <ion-icon class ="bottom" name="search-circle-sharp"></ion-icon>
+              <ion-icon class ="top" name="search-circle-outline"></ion-icon> -->
+                <ion-icon class="search-icon icon-shadow" name="search-outline"
+                  color="{{item.name}}"></ion-icon>
+              </div>
+              <div class="selectedoption">
+                <ion-label class="base">{{selectedOptions[item.name].base}}
+                </ion-label>
+                <ion-label
+                  class="translation">{{selectedOptions[item.name].translation
+                  }}</ion-label>
               </div>
             </ion-item>
-          </ion-card-content>
-
-          <ion-item color="{{item.name}}" class="selected" disabled="{{item.disabled}}">
-            <div class="overlapping" slot="end" style="margin-left: 10px;">  
-              <!-- <fa-icon [icon]="['fas', 'magnifying-glass']" class="search-icon" color="{{item.name}}"></fa-icon> -->
-              <!-- <ion-icon class ="bottom" name="search-circle-sharp"></ion-icon>
-              <ion-icon class ="top" name="search-circle-outline"></ion-icon> -->
-              <ion-icon class ="search-icon icon-shadow" name="search-outline" color="{{item.name}}"></ion-icon>
-            </div>
-            <div class="selectedoption">
-              <ion-label class="base">{{selectedOptions[item.name].base}}  </ion-label>
-              <ion-label class="translation">{{selectedOptions[item.name].translation }}</ion-label>
-            </div>
-          </ion-item>
           </div>
         </ion-card>
-  
-        
+
         <!-- <div *ngIf="show_error"> -->
-          <div [hidden] = "!show_error">
+        <div [hidden]="!show_error">
           <p class="error" id="error">{{error}}</p>
         </div>
         <!-- <div *ngIf="show_result"> -->
-          <!-- <div [hidden] = "!show_result">
+        <!-- <div [hidden] = "!show_result">
           <p class="result" id="result">{{result}}</p>
           <ion-button (click)=reset()>CLEAR</ion-button>
         </div> -->
 
       </ion-col>
-      
+
     </ion-row>
   </ion-grid>
-  <div [hidden] = "!show_result">
+  <div [hidden]="!show_result">
 
-  <ion-grid class="ion-no-margin ion-no-padding justify-content-center">
-    <ion-row class="ion-no-margin ion-no-padding ion-align-items-center ion-justify-content-center">
-      <ion-col class="ion-no-margin ion-no-padding ion-text-center" size="auto">
-        <div *ngFor="let result of results">
-          <p class="result" id="result">
-        <app-result *ngIf="show_result"
-        [tier]="tier"
-        [data]="result"
-        [hasAudio]="true"
-        ></app-result>
-      </p>
-      </div>
-        <!-- <p class="result" id="result"> hello
+    <ion-grid class="ion-no-margin ion-no-padding justify-content-center">
+      <ion-row
+        class="ion-no-margin ion-no-padding ion-align-items-center ion-justify-content-center">
+        <ion-col class="ion-no-margin ion-no-padding ion-text-center"
+          size="auto">
+          <div *ngFor="let result of results">
+            <p class="result" id="result">
+              <app-result *ngIf="show_result"
+                [tier]="tier"
+                [data]="result"
+                [hasAudio]="true"></app-result>
+            </p>
+          </div>
+          <!-- <p class="result" id="result"> hello
           <ion-text *ngFor="let result of results;">
              test
           </ion-text>
         </p> -->
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
     <!-- <p class="result" id="result">{{result}}</p> -->
   </div>
-  
+
   <ion-grid class="ion-no-margin ion-no-padding justify-content-center">
     <ion-row class="ion-no-margin ion-no-padding">
-      <ion-col class="ion-no-margin ion-no-padding ion-text-center" size-sm="8" offset-sm="2" size-md="6" offset-md="3" size-xl="4" offset-xl="4">
-        <ion-button [hidden] = "!show_result" id="clear" (click)=reset()>CLEAR</ion-button>
+      <ion-col class="ion-no-margin ion-no-padding ion-text-center" size-sm="8"
+        offset-sm="2" size-md="6" offset-md="3" size-xl="4" offset-xl="4">
+        <ion-button [hidden]="!show_result" id="clear"
+          (click)=reset()>CLEAR</ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>
-  
 
 </ion-content>

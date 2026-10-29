@@ -31,15 +31,15 @@ export class ConjugatorPage implements OnInit {
   information: Array<grammarCat> = [];
   results: Results = [];
   myFunInformation$ = new BehaviorSubject(this.information);
-  selectedOptions: { [id: string]: { translation, id, base } } = {};
-  selectedPath: { [id: string]: node} = {};
+  selectedOptions: { [id: string]: { translation: string, id: string, base: string } } = {};
+  selectedPath: { [id: string]: node } = {};
   tier = TIERS[0];
 
   constructor(private modalController: ModalController, private service: DataService) { }
 
   ngOnInit() {
     this.information = JSON.parse(JSON.stringify(this.service.setinformation));
-    this.myFunInformation$.subscribe(data =>{
+    this.myFunInformation$.subscribe(data => {
       this.information = data;
     });
     this.myFunInformation$.next(JSON.parse(JSON.stringify(this.service.setinformation)));
@@ -53,7 +53,7 @@ export class ConjugatorPage implements OnInit {
         base: ''
       };
     });
-    return 
+    return
   };
 
   getContent() {
@@ -61,11 +61,11 @@ export class ConjugatorPage implements OnInit {
   }
 
   scrollToBottom() {
-    let content= document.querySelector('ion-content');
+    let content = document.querySelector('ion-content');
     setTimeout(function () {
       content.scrollToBottom(500);
     }, 250);
-    
+
   }
 
   scrollToTop() {
@@ -74,14 +74,14 @@ export class ConjugatorPage implements OnInit {
 
   scroll(id) {
     let el = document.getElementById(id);
-    if (id == "result" || id == "error"){
-    setTimeout(function () {el.scrollIntoView({ behavior: 'smooth', block: 'end' })}, 250);
-    }else{
-      setTimeout(function () {el.scrollIntoView({ behavior: 'smooth', block: 'start' })}, 500);
+    if (id == "result" || id == "error") {
+      setTimeout(function () { el.scrollIntoView({ behavior: 'smooth', block: 'end' }) }, 250);
+    } else {
+      setTimeout(function () { el.scrollIntoView({ behavior: 'smooth', block: 'start' }) }, 500);
     }
   }
 
-  updateDisabled(pos,index: number){
+  updateDisabled(pos, index: number) {
     /* 
     This function handles tasks relating to enabling and disabling available categories.
     Returns none
@@ -92,45 +92,45 @@ export class ConjugatorPage implements OnInit {
     this.ableCat(i);
   }
 
-  updatePath(pos, index:number, selected){
+  updatePath(pos, index: number, selected) {
     /*Function updates the path and the information for the follow category 
     pos is current cat
     index is the pos index
     selected is the selected option 
     */
 
-    console.log("SELECTED PATH",this.selectedPath);
+    console.log("SELECTED PATH", this.selectedPath);
     let prev_pos;
     let n;
 
-    if (index == 0){
+    if (index == 0) {
       prev_pos = pos;
       let root = this.service.tree.getRoot();
       n = root.getChild(selected.id);
-    } else{
+    } else {
       prev_pos = this.information[index - 1].name;
       n = this.selectedPath[prev_pos].getChild(selected.id);
     }
     this.updateNodePath(n, pos);
     this.currentIndex = index + 1;
-    if (index+1 >= this.information.length){
+    if (index + 1 >= this.information.length) {
       this.Conjugate();
     }
-    else{
-      this.updateInformation(index+1, pos);
-      selected = this.skipSingleItemCat(index+1)
-      if (selected){
+    else {
+      this.updateInformation(index + 1, pos);
+      selected = this.skipSingleItemCat(index + 1)
+      if (selected) {
         pos = this.information[index + 1].name;
-        this.updatePath(pos,index+1,selected);
-        this.updateDisabled(pos, index+1)
-      } 
+        this.updatePath(pos, index + 1, selected);
+        this.updateDisabled(pos, index + 1)
+      }
     }
-    
+
   }
 
-    skipSingleItemCat(index){
+  skipSingleItemCat(index) {
     let id = this.information[index].name;
-    if (this.information[index].cat.length == 1){
+    if (this.information[index].cat.length == 1) {
       let tempinfo = this.information[index].cat[0]
       this.selectedOptions[id].translation = tempinfo.translation;
       this.selectedOptions[id].id = tempinfo.id;
@@ -141,32 +141,32 @@ export class ConjugatorPage implements OnInit {
   }
 
 
-  ableCat(index: number){
+  ableCat(index: number) {
     /*
     This function takes in an index and enables the next category
     to be accessible.
     */
-    if (index < this.information.length){
+    if (index < this.information.length) {
       this.information[index].disabled = false;
       this.myFunInformation$.next(this.information);
     }
   }
 
-  disableLowerCat(index: number){
+  disableLowerCat(index: number) {
     /*
     This function takes in an index and disables all categories lower than that, 
     so that the user cannot change a previous category without resetting the below categories.
     */
-    
+
     let key: string;
-    for(let i = index; i < this.information.length; i ++){ // find all categories at a lower index
+    for (let i = index; i < this.information.length; i++) { // find all categories at a lower index
       key = this.information[i].name; // get the name
-      this.selectedOptions[key] = {translation: '', id: '', base:''};  // reset so that there is no selected option at that name
-      this.information[i].disabled=true; // disable access
+      this.selectedOptions[key] = { translation: '', id: '', base: '' };  // reset so that there is no selected option at that name
+      this.information[i].disabled = true; // disable access
     }
   }
 
-  
+
 
   setSelected(pos, selected) {
     /* 
@@ -188,14 +188,14 @@ export class ConjugatorPage implements OnInit {
   }
 
 
-  updateInformation(index: number, pos:string) {
+  updateInformation(index: number, pos: string) {
     let selectFrom = this.service.setinformation[index].cat;
     this.information[index].cat = [];
-    
+
     let children = this.selectedPath[pos].getChildren();
     selectFrom.forEach(element => {
       for (let i = 0; i < children.length; i++) {
-        if (children[i].getId() == element.id){
+        if (children[i].getId() == element.id) {
           this.information[index].cat.push(element);
           break;
         }
@@ -204,14 +204,14 @@ export class ConjugatorPage implements OnInit {
     this.myFunInformation$.next(this.information);
   }
 
-  Conjugate(){
+  Conjugate() {
     let canconjugate = true;
     Object.keys(this.selectedOptions).forEach(element => {
-      if (this.selectedOptions[element].id === ''){
+      if (this.selectedOptions[element].id === '') {
         canconjugate = false;
       }
-    }); 
-    if (!canconjugate){
+    });
+    if (!canconjugate) {
       this.show_error = true;
       this.error = "Please make sure to choose an option from each category.";
       this.result = '';
@@ -226,8 +226,8 @@ export class ConjugatorPage implements OnInit {
     this.results = this.service.conjugate(this.selectedPath);
     console.log("results", this.results);
     let coloured = '';
- 
-    
+
+
     // document.getElementById("result").innerHTML = coloured;
     // this.result = coloured;
     this.scroll("clear");
@@ -236,21 +236,21 @@ export class ConjugatorPage implements OnInit {
 
 
 
-  formatResults(){
-    
+  formatResults() {
+
   }
 
 
   async openModalSearch(whichSearch, index) {
     let hasAudio: boolean = false;
-    if (whichSearch == "verb"){
+    if (whichSearch == "verb") {
       hasAudio = true;
     }
     const modal = await this.modalController.create({
       component: SearchPage,
       componentProps: {
-        'conj_type':whichSearch,
-        'options':this.information[index].cat,
+        'conj_type': whichSearch,
+        'options': this.information[index].cat,
         'hasAudio': hasAudio
       }
     });
@@ -258,13 +258,13 @@ export class ConjugatorPage implements OnInit {
 
     modal.onWillDismiss().then(dataReturned => {
       // trigger when about to close the modal
-      if (dataReturned != null || dataReturned != undefined){
+      if (dataReturned != null || dataReturned != undefined) {
         if (dataReturned.data.id.length > 0) { // if something was returned, set it as the selected option
           this.selectedOptions[whichSearch].translation = dataReturned.data.translation;
           this.selectedOptions[whichSearch].id = dataReturned.data.id;
           this.selectedOptions[whichSearch].base = dataReturned.data.base;
-          this.updateDisabled(whichSearch,index);
-          this.updatePath(whichSearch,index, dataReturned.data);
+          this.updateDisabled(whichSearch, index);
+          this.updatePath(whichSearch, index, dataReturned.data);
           // let id = this.information[index + 1].name;
           // this.scroll(id);
         }
@@ -280,12 +280,12 @@ export class ConjugatorPage implements OnInit {
   async openModalToolTip(whichtip) {
     // with data
     const modal = await this.modalController.create({
-      
+
       component: VerbTooltipPage,
       componentProps: {
-        'conj_type':whichtip
+        'conj_type': whichtip
       }
-      
+
     });
     modal.onWillDismiss().then(dataReturned => {
     });
@@ -295,19 +295,19 @@ export class ConjugatorPage implements OnInit {
   }
 
 
- 
+
   ngOnDestory() {
     this.myFunInformation$.unsubscribe();
   }
 
-  reset(){
+  reset() {
     let key: string;
-    for(let i = 0; i < this.information.length; i ++){ // find all categories at a lower index
+    for (let i = 0; i < this.information.length; i++) { // find all categories at a lower index
       key = this.information[i].name; // get the name
-      this.selectedOptions[key] = {translation: '', id: '', base:''};  // reset so that there is no selected option at that name
-      this.information[i].disabled=true; // disable access
+      this.selectedOptions[key] = { translation: '', id: '', base: '' };  // reset so that there is no selected option at that name
+      this.information[i].disabled = true; // disable access
     }
-    this.information[0].disabled=false;
+    this.information[0].disabled = false;
     this.result = '';
     this.error = '';
     this.currentIndex = 0;
@@ -316,7 +316,7 @@ export class ConjugatorPage implements OnInit {
     this.scrollToTop();
   }
 
-  playSound(){
+  playSound() {
     let audio = new Audio();
     audio.src = "../../../assets/audio/boing.wav"
     audio.load();

@@ -61,7 +61,6 @@ describe('AppComponent', () => { // describe creates a block that groups togethe
     await TestBed.configureTestingModule({
       declarations: [AppComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      // ... in TestBed.configureTestingModule:
       providers: [
         { provide: Platform, useValue: mockPlatform },
         { provide: SplashScreen, useValue: mockSplashScreen },
@@ -72,7 +71,7 @@ describe('AppComponent', () => { // describe creates a block that groups togethe
     }).compileComponents();
 
     fixture = TestBed.createComponent(AppComponent);
-    app = fixture.debugElement.componentInstance;
+    app = fixture.componentInstance;
   });
 
   it('should create the app', () => {

@@ -14,32 +14,37 @@ import { environment } from "../../../environments/environment";
 export class SettingsPage implements OnInit {
   defaultSpeaker: Speaker = environment.ttsConfig.defaultSpeaker;
 
-  deferredPrompt: any;
   showInstallButton: Boolean = false;
   browser: String = "";
   loginError?: string;
   logoutError?: string;
+  deferredPrompt: any = null;
+  private timeoutId: any;
+  private boundBeforeInstallPrompt: (e: any) => void;
 
   constructor(
     public auth: AuthService,
     private router: Router,
     public tts: EveryVoiceService,
     @Inject(DOCUMENT) public document: Document,
-  ) {}
-
-  ngOnInit() {
-    window.addEventListener("beforeinstallprompt", (e: any) => {
+  ) {
+    this.boundBeforeInstallPrompt = (e: any) => {
       console.log("beforeinstallprompt event fired", e);
       e.preventDefault();
       this.deferredPrompt = e;
       this.showInstallButton = true;
-    });
+    };
+    window.addEventListener("beforeinstallprompt", this.boundBeforeInstallPrompt);
+  }
 
-    setTimeout(() => {
+  ngOnInit() {
+
+    this.timeoutId = setTimeout(() => {
       if (!this.deferredPrompt) {
         console.log("beforeinstallprompt event did NOT fire");
+        this.showInstallButton = false; // Ensure button stays hidden
       }
-    }, 3000); // 3 seconds after init
+    }, 3000);
 
     const userAgent = navigator.userAgent;
     console.log(userAgent);
@@ -58,14 +63,14 @@ export class SettingsPage implements OnInit {
 
   login() {
     this.auth.loginWithRedirect({
-      appState: { target: '/tabs/settings'}
+      appState: { target: '/tabs/settings' }
     }).subscribe({
       error: (err) => {
         this.loginError =
           err?.error_description || err?.message || 'Login failed. Try again.';
-        }
-      });
-    }
+      }
+    });
+  }
 
   logout() {
     this.auth.logout({ logoutParams: { returnTo: document.location.origin + '/auth-callback' } })
@@ -90,4 +95,13 @@ export class SettingsPage implements OnInit {
       this.deferredPrompt = null;
     });
   }
+
+  ngOnDestroy() {
+    window.removeEventListener("beforeinstallprompt", this.boundBeforeInstallPrompt);
+    if (this.timeoutId) {
+      clearTimeout(this.timeoutId); //cancels a timeout previously established by calling setTimeout().
+
+    }
+  }
+
 }
