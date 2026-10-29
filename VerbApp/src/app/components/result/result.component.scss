@@ -6,7 +6,7 @@
     height: 16px;
     border-radius: 50%;
     text-align: center;
-    line-height: 100px;
+    // line-height: 100px;
     vertical-align: middle;
     padding: 8px;
   }
@@ -14,3 +14,12 @@
 span{
   color: white;
   }
+
+p{
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.gloss {
+  font-size: 75%;
+}

@@ -6,18 +6,18 @@ import numpy
 
 class TreeBuilder:
 
-    def __init__(self, input_dict, output_file, keys, path):
+    def __init__(self, input_dict, output_file, ordered_keys, path):
         """Class takes a list of dictionaries and creates a tree data structure through dictionaries.
         Calls tree builder function.
 
         Args:
             input_dict (list): List of dictionaries
             output_file (str): Tree output file name
-            keys (list): List of key names, if user specified
+            ordered_keys (list): List of key names, if user specified
         """
         self.input_dict = input_dict
         self.output_file = output_file
-        self.keys = keys
+        self.keys = ordered_keys
         self.path = path
         self.toTree()
         self.duplicates = set()

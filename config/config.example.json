@@ -1,0 +1,61 @@
+{
+  "replace": {
+    "#": " "
+  },
+  "test": true,
+  "autoPlace": false,
+  "inputFile": {
+    "path": "Data/example.csv",
+    "format": "csv"
+  },
+  "result": {
+    "name": "text",
+    "delimiter": "_",
+    "breakdown": true,
+    "label": true,
+    "subResult": [
+      {
+        "name": "gloss",
+        "breakdown": false,
+        "label": false
+      }
+    ]
+  },
+  "categories": { "verb": {}, "noun": {}, "pronoun": {} },
+  "categoryOrder": ["noun", "verb", "pronoun"],
+  "headerDelimiter": "_",
+  "orthography": [
+    {
+      "name": "standard roman orthography",
+      "shorthand": "sro",
+      "order": [
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g",
+        "h",
+        "i",
+        "j",
+        "k",
+        "l",
+        "m",
+        "n",
+        "o",
+        "p",
+        "q",
+        "r",
+        "s",
+        "t",
+        "u",
+        "v",
+        "w",
+        "x",
+        "y",
+        "z"
+      ]
+    }
+  ]
+}

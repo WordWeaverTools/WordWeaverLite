@@ -1,25 +1,20 @@
 <ng-container>
-  <ng-container *ngFor="let morpheme of output; last as isLast">
-    <span [ngClass]="morpheme[morphType]"><ion-text
-        color="{{morpheme[morphType]}}">{{ morpheme[tier.key]
-        }}</ion-text></span>
-    <span *ngIf="!isLast" class="separator">{{ tier.separator }}</span>
+  <ng-container *ngFor="let result of data">
+    <p [ngClass]="result[nameIndex]">{{result[nameIndex]}}
+      <ng-container
+        *ngFor="let morpheme of result[resultIndex]; last as isLast">
+        <span [ngClass]="morpheme[morphType]">
+          <ion-text
+            color="{{morpheme[morphType]}}">{{ morpheme[tier.key] }}
+          </ion-text>
+        </span>
+        <span *ngIf="!isLast" class="separator">{{ tier.separator }}</span>
 
+      </ng-container>
+
+      <lib-every-voice
+        *ngIf="hasAudio"
+        [textToGenerate]="rawText"></lib-every-voice>
+    </p>
   </ng-container>
-  <lib-every-voice
-    *ngIf="hasAudio"
-    [textToGenerate]="rawText"></lib-every-voice>
-  <!-- <ion-icon name="volume-high" class="audio-icon" (click)="audio()">Play Sound</ion-icon> -->
-
 </ng-container>
-
-<!-- 
-<ion-grid class="ion-no-margin ion-no-padding justify-content-center">
-  <ion-row class="ion-no-margin ion-no-padding ion-align-items-center ion-justify-content-center">
-    <ion-col class="ion-no-margin ion-no-padding ion-text-center" size="auto">
-      <p class="result" id="result">{{result}}</p>
-    </ion-col>
-    <ion-col class="ion-no-margin ion-no-padding ion-text-center" size="auto">
-    </ion-col>
-  </ion-row>
-</ion-grid> -->

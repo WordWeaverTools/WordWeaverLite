@@ -2,8 +2,8 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ModalController, Platform } from '@ionic/angular';
 import * as Information from '../../../assets/JSON/information.json';
 import { VerbTooltipPage } from '../../modals/verb-tooltip/verb-tooltip.page';
- import { EveryVoiceService } from "@everyvoice/every-voice";
- 
+import { EveryVoiceService } from "@everyvoice/every-voice";
+
 
 
 @Component({
@@ -16,7 +16,7 @@ import { VerbTooltipPage } from '../../modals/verb-tooltip/verb-tooltip.page';
 export class SearchPage implements OnInit {
   blank = '';
   query = '';
-  matches = [];
+  matches: Array<any> = [];
   public selectedItem = '';
   selectedItemID = '';
   isDisabled = true;
@@ -29,39 +29,39 @@ export class SearchPage implements OnInit {
   items = [];
   myColor = '#006400';
 
-  constructor(private modalController: ModalController, public tts: EveryVoiceService) {}
+  constructor(private modalController: ModalController, public tts: EveryVoiceService) { }
 
   ngOnInit() {
 
     this.matches = this.options;
     this.formatSelected();
-    for (let item of this.matches){
+    for (let item of this.matches) {
       console.log(item);
-      if (item.type_color == ""){
+      if (item.type_color == "" || item.type_color == undefined) {
         item.type_color = this.conj_type;
       }
     }
   }
   // Plays the corresponding sound for a term
-  playSound(event){
+  playSound(event) {
     this.rawText = event;
   }
-  
+
   // Logs clicked verb
   selectItem(v) {
-    if(this.selectedItemID != v.id){
+    if (this.selectedItemID != v.id) {
       this.selectedItem = v;
       this.selectedItemID = v.id;
-    } else{
+    } else {
       this.selectedItem = '';
       this.selectedItemID = '';
     }
     this.selectAbled();
-    this.closeModalWithData(); 
-    
+    this.closeModalWithData();
+
   }
 
-  formatSelected(){
+  formatSelected() {
     var r = (<HTMLElement>document.querySelector(':root'));
     let var_name = "--ion-color-" + this.conj_type;
     var rootStyle = getComputedStyle(r);
@@ -69,10 +69,10 @@ export class SearchPage implements OnInit {
     r.style.setProperty('--holder', getColor);
   }
 
-  selectAbled(){
-    if (this.selectedItem == ''){
+  selectAbled() {
+    if (this.selectedItem == '') {
       this.isDisabled = true;
-    } else{
+    } else {
       this.isDisabled = false;
     }
   }
@@ -111,13 +111,13 @@ export class SearchPage implements OnInit {
       }
     }
     let sortedAnswers;
-    if (results.length > 0){
-    sortedAnswers = results.sort(function (a, b) {
-      return a.base.length - b.base.length;
-    });
-  }else{
-    sortedAnswers = [];
-  }
+    if (results.length > 0) {
+      sortedAnswers = results.sort(function (a, b) {
+        return a.base.length - b.base.length;
+      });
+    } else {
+      sortedAnswers = [];
+    }
     return (sortedAnswers);
   }
 
@@ -125,7 +125,7 @@ export class SearchPage implements OnInit {
   // On keyup event, this function searches for relevant verbs. If event results on an empty search, will show all possibilities.
   getResults(event) {
     this.query = event.target.value;
-    if (this.query.length > 0 ) {
+    if (this.query.length > 0) {
       let t = this.matchTranslation();
       let b = this.matchBase();
       let results = b.concat(t);
@@ -140,12 +140,12 @@ export class SearchPage implements OnInit {
   async openModalToolTip(whichtip) {
     // with data
     const modal = await this.modalController.create({
-      
+
       component: VerbTooltipPage,
       componentProps: {
-        'conj_type':whichtip
+        'conj_type': whichtip
       }
-      
+
     });
     modal.onWillDismiss().then(dataReturned => {
     });

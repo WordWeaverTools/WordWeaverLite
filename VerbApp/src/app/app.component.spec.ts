@@ -1,51 +1,115 @@
+// Example partially followed: https://github.com/jestjs/jest/blob/main/examples/angular/app.component.spec.ts
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { TestBed, waitForAsync } from '@angular/core/testing';
-// import { IonicStorageModule } from '@ionic/storage';
-import { Platform } from '@ionic/angular';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Platform } from '@ionic/angular'; // The Platform service can be used to get information about your current device. - https://ionicframework.com/docs/angular/platform
+import { AuthService } from '@auth0/auth0-angular';
+import { AppComponent } from './app.component';
+import { environment } from '../environments/environment';
+import { BehaviorSubject } from 'rxjs';
 import { SplashScreen } from '@awesome-cordova-plugins/splash-screen/ngx';
 import { StatusBar } from '@awesome-cordova-plugins/status-bar/ngx';
-import { FormsModule } from '@angular/forms';
-import { AppComponent } from './app.component';
+import { EveryVoiceService } from '@everyvoice/every-voice';
 
-describe('AppComponent', () => {
 
-  let statusBarSpy, splashScreenSpy, platformReadySpy, platformSpy;
+// Mocked Cordova plugins [using manual mock - https://jestjs.io/docs/manual-mocks]
+// Module-level mocking
+jest.mock('@awesome-cordova-plugins/splash-screen/ngx', () => ({
+  SplashScreen: jest.fn() // Returns a new, unused mock function. Optionally takes a mock implementation. (https://jestjs.io/docs/jest-object#jestfnimplementation)
+}));
 
-  beforeEach(waitForAsync(() => {
-    statusBarSpy = jasmine.createSpyObj('StatusBar', ['styleDefault']);
-    splashScreenSpy = jasmine.createSpyObj('SplashScreen', ['hide']);
-    platformReadySpy = Promise.resolve();
-    platformSpy = jasmine.createSpyObj('Platform', { ready: platformReadySpy });
+jest.mock('@awesome-cordova-plugins/status-bar/ngx', () => ({
+  StatusBar: jest.fn()
+}));
 
-    TestBed.configureTestingModule({
-      imports: [
-        // FormsModule, IonicStorageModule.forRoot()
-        FormsModule
-      ],
+jest.mock('@everyvoice/every-voice', () => ({
+  EveryVoiceService: jest.fn()
+}));
+
+describe('AppComponent', () => { // describe creates a block that groups together several related tests
+  let app: AppComponent;
+  let fixture: ComponentFixture<AppComponent>; //https://v17.angular.io/api/core/testing/ComponentFixture
+  let mockPlatform: any;
+  let mockSplashScreen: any;
+  let mockStatusBar: any;
+  let mockAuthService: any;
+  let mockTts: any;
+  let isAuthenticatedSubject: BehaviorSubject<boolean>;
+
+  beforeEach(async () => {
+    isAuthenticatedSubject = new BehaviorSubject<boolean>(true);
+
+    mockPlatform = {
+      ready: jest.fn().mockResolvedValue('cordova')
+    };
+
+    mockSplashScreen = {
+      hide: jest.fn()
+    };
+
+    mockStatusBar = {
+      styleDefault: jest.fn()
+    };
+
+    mockAuthService = {
+      isAuthenticated$: isAuthenticatedSubject.asObservable()
+    };
+
+    mockTts = {
+      ttsEnabledAndAuthenticated$: { next: jest.fn() }
+    };
+
+    await TestBed.configureTestingModule({
       declarations: [AppComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      // ... in TestBed.configureTestingModule:
       providers: [
-        { provide: StatusBar, useValue: statusBarSpy },
-        { provide: SplashScreen, useValue: splashScreenSpy },
-        { provide: Platform, useValue: platformSpy },
-      ],
+        { provide: Platform, useValue: mockPlatform },
+        { provide: SplashScreen, useValue: mockSplashScreen },
+        { provide: StatusBar, useValue: mockStatusBar },
+        { provide: AuthService, useValue: mockAuthService },
+        { provide: EveryVoiceService, useValue: mockTts }
+      ]
     }).compileComponents();
-  }));
+
+    fixture = TestBed.createComponent(AppComponent);
+    app = fixture.debugElement.componentInstance;
+  });
 
   it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.debugElement.componentInstance;
     expect(app).toBeTruthy();
   });
 
-  it('should initialize the app', async () => {
-    TestBed.createComponent(AppComponent);
-    expect(platformSpy.ready).toHaveBeenCalled();
-    await platformReadySpy;
-    expect(statusBarSpy.styleDefault).toHaveBeenCalled();
-    expect(splashScreenSpy.hide).toHaveBeenCalled();
+
+
+  describe('Authentication', () => {
+
+    it('should initialize requiresAuth from environment config', () => {
+      expect(app.requiresAuth).toBe(environment.ttsConfig.requiresAuth);
+    });
+
+    it('should set up auth subscription when when requiresAuth is true', () => {
+      app.requiresAuth = true;
+      isAuthenticatedSubject.next(true);
+      app.initializeApp();
+
+      expect(mockTts.ttsEnabledAndAuthenticated$.next).toHaveBeenCalledWith(true);
+    });
+
+    it('should not set up auth subscription when requiresAuth is false', () => {
+      app.requiresAuth = false;
+
+      jest.clearAllMocks();
+      app.initializeApp();
+
+      expect(mockTts.ttsEnabledAndAuthenticated$.next).not.toHaveBeenCalled();
+    });
+
+    it('should emit false when user is not authenticated', () => {
+      app.requiresAuth = true;
+      isAuthenticatedSubject.next(false);
+      app.initializeApp();
+
+      expect(mockTts.ttsEnabledAndAuthenticated$.next).toHaveBeenCalledWith(false);
+    });
   });
-
-  // TODO: add more tests!
-
 });

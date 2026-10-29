@@ -13,18 +13,13 @@ export class VerbTooltipPage implements OnInit {
   tips = ToolTipInfo['default'];
 
   constructor(private modalController: ModalController) {
-    console.log("constructor")
-   }
-
-  ngOnInit() {
-    console.log(this.conj_type);
-    console.log("tips",this.tips);
-    this.formatSelected();
-    // console.log("tip tense",this.tips.tense);
-
   }
 
-  formatSelected(){
+  ngOnInit() {
+    this.formatSelected();
+  }
+
+  formatSelected() {
     var r = (<HTMLElement>document.querySelector(':root'));
     let var_name = "--ion-color-" + this.conj_type;
     var rootStyle = getComputedStyle(r);
@@ -32,13 +27,13 @@ export class VerbTooltipPage implements OnInit {
     r.style.setProperty('--holder', getColor);
   }
 
-  getTip(){
+  getTip() {
     let des = '';
-    for (let tip of this.tips){
-        if(tip.type == this.conj_type){
-          des = tip.tip;
-          break;
-        }
+    for (let tip of this.tips) {
+      if (tip.type == this.conj_type) {
+        des = tip.tip;
+        break;
+      }
     }
     return des;
   }
@@ -47,7 +42,7 @@ export class VerbTooltipPage implements OnInit {
     await this.modalController.dismiss();
   };
 
-  
+
 
 }
 
