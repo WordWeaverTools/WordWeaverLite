@@ -13,12 +13,12 @@ class ArgParsing:
         Populates attributes self.parser and self.args
         '''
         self.parser = argparse.ArgumentParser()
-        self.parser.add_argument("-f","--file_input", dest="input_file", help="Input file containing language model", required=True)
-        self.parser.add_argument("-o", "--order", dest="order", help="In-app category order")
-        self.parser.add_argument("-tt", "--tooltip", dest="tooltip", default=False, help="Autogenerate tooltip json file", action="store_true")
-        self.parser.add_argument("-c", "--colour", dest="colour", default=False, help="Autogenerate colours in scss file", action="store_true")
-        self.parser.add_argument("--auto-place", dest="autoplace", default=False, help="Automatically places variable.scss and JSON folders in correct paths", action="store_true")
-        self.parser.add_argument("--test", dest="test", default=False, help="Runs basic tests about the created JSON files.", action="store_true")
+        self.parser.add_argument("-f","--file_config", dest="config_file", help="Configuration File. See config/ for examples. Must be either JSON or YAML/YML format.", required=False)
+        # self.parser.add_argument("-o", "--order", dest="order", help="In-app category order")
+        # self.parser.add_argument("-tt", "--tooltip", dest="tooltip", default=False, help="Autogenerate tooltip json file", action="store_true")
+        # self.parser.add_argument("-c", "--colour", dest="colour", default=False, help="Autogenerate colours in scss file", action="store_true")
+        # self.parser.add_argument("--auto-place", dest="autoplace", default=False, help="Automatically places variable.scss and JSON folders in correct paths", action="store_true")
+        # self.parser.add_argument("--test", dest="test", default=False, help="Runs basic tests about the created JSON files.", action="store_true")
 
         self.args = self.parser.parse_args()    
 
@@ -27,25 +27,17 @@ class ArgParsing:
         """Checks the validity of the files given in the arguments.
 
         Returns:
-            input_file (str): path of the file containing the language information
-            order_file (str): path of the file containing the ordering information (if exists)
+            None or Config File
         """
 
-        #Validate input/LM file
-        self.args.input_file = self.args.input_file.strip()
-        input_file = self.args.input_file
-        self.checkFileExists(input_file, "Input")
-        self.checkFileFormat(input_file, "Input")
+        #Validate config file
+        if self.args.config_file:
+            self.args.config_file = self.args.config_file.strip()
+            self.checkFileExists(self.args.config_file, "Config")
+            self.checkFileFormat(self.args.config_file, "Config")
+            return self.args.config_file
 
-        # Validate order file, if exists
-        if self.args.order:
-            order_file = self.args.order
-            self.checkFileExists(order_file, "Order")
-            self.checkFileFormat(order_file, "Order")
-        else:
-            order_file = None
-
-        return input_file, order_file
+        return 
     
 
     def checkFileExists(self,file:str, filetype:str):
@@ -60,7 +52,7 @@ class ArgParsing:
             f = open(file, 'r')
             f.close()
         except OSError:
-            print("{} file '{}' does not exist.".format(filetype,file))
+            print("[ARG PARSE] [✖FATAL✖] {} file '{}' does not exist.".format(filetype,file))
             exit()
 
 
@@ -72,6 +64,6 @@ class ArgParsing:
             filetype (str): type of the file for error message
         """
 
-        if not file.endswith("sv"):
-            print("{} file '{}' MUST have delimiter seperated values and a ._sv extension".format(filetype,file))
+        if not file.lower().endswith("json") and not file.lower().endswith("yaml") and not file.lower().endswith("yml"):
+            print("[ARG PARSE] [✖FATAL✖] {} file '{}' MUST be a JSON or YAML/YML file.".format(filetype,file))
             exit()
