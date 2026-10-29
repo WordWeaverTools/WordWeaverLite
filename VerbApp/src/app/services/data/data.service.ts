@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import * as Conjugation from '../../../assets/JSON/conjugation.json';
 import * as Information from '../../../assets/JSON/information.json';
-// import * as JSONTree from '../../../assets/JSON/category_tree.json';
 import { grammarCat } from '../../models/grammar-cat.model';
 import { grammarCatItem } from '../../models/grammar-cat-item.model';
-import {ResultMorpheme, ResultMorphemeNameIndex, Result, Results} from '../../models/result.model';
-import { Tree } from 'src/app/models/tree.model';
+import { ResultMorpheme, ResultMorphemeNameIndex, Result, Results, ResultClass, ResultInfo } from '../../models/result.model';
+import { Tree } from '../../models/tree.model';
 import { node } from "../../models/node.model";
 
 
@@ -18,27 +17,29 @@ export class DataService {
   conjugations = Conjugation['default']
   JsonTree = this.JsonTree_info[1]
   conj_order = this.JsonTree_info[0];  // level order of conjugation tree
+
   setinformation: Array<grammarCat> = [];
 
   tree = new Tree(new node('root'));
 
   constructor() {
     this.loadInformation();
-    for (let item of this.setinformation){
-      item.cat.forEach(child=>{
-        if(typeof child.type_color === 'undefined'){
+    for (let item of this.setinformation) {
+      item.cat.forEach(child => {
+        if (typeof child.type_color === 'undefined') {
           child.type_color = "";
         }
-      }); 
+      });
     }
     this.setinformation[0].disabled = false;
     let root_node = this.tree.getRoot();
     this.buildTree(this.JsonTree, root_node);
+
   }
 
-  
 
-  loadInformation(){ 
+
+  loadInformation() {
     this.setinformation = Information['default'].map(item => {
       let catItem = item.children.map(child => {
         let item: grammarCatItem = {
@@ -55,17 +56,17 @@ export class DataService {
         cat: catItem,
         open: false,
         disabled: true,
-    }
-    return cat;
+      }
+      return cat;
     });
   }
 
 
 
-  buildTree(tree, upper_node){
+  buildTree(tree, upper_node) {
     // If the section given is a list/array, this is the final level of the tree/is the leafs
-    if(Array.isArray(tree)){
-      tree.forEach(id  =>{
+    if (Array.isArray(tree)) {
+      tree.forEach(id => {
         let n_level_node = new node(id);
         upper_node.addChild(n_level_node);
       })
@@ -78,30 +79,33 @@ export class DataService {
       // the previous node is the parent node
       upper_node.addChild(n_level_node);
       // If there is information below this node
-      if (typeof tree[id] !== 'undefined' &&  typeof tree[id] != "string"){
-        this.buildTree(tree[id],n_level_node);
+      if (typeof tree[id] !== 'undefined' && typeof tree[id] != "string") {
+        this.buildTree(tree[id], n_level_node);
       }
     });
     return;
-   }
+  }
 
-  
+
   conjugate(nodePath) {
     const results: Results = [];
 
-    let final_node = nodePath[this.conj_order[this.conj_order.length-2]]
-    console.log("final_node",final_node);
+    let final_node = nodePath[this.conj_order[this.conj_order.length - 2]]
     let result_ids = final_node.getChildren()
-    console.log("result_ids",result_ids);
 
-    for (let id in result_ids){
-      let result: Result= [];
-      for (let i = 0; i < result_ids[id]["id"][1].length; i++){
-        let morph: ResultMorpheme = [result_ids[id]["id"][1][i],result_ids[id]["id"][2][i]];
-        result.push(morph);
+    for (let id in result_ids) {
+      let result: Result = [];
+      for (let i = 0; i < result_ids[id]["id"][0].length; i++) {
+        let result_info: ResultInfo = [];
+        for (let j = 0; j < result_ids[id]["id"][0][i].length; j++) {
+          let morph: ResultMorpheme = [result_ids[id]["id"][i][0][j], result_ids[id]["id"][i][1][j]];
+          result_info.push(morph);
+        }
+        let result_class: ResultClass = [this.conj_order.at(-1).at(i), i, result_info];
+        result.push(result_class);
       };
-      console.log("result",result);
-      results.push(result);
+
+      results.push(result)
     }
     return results;
   }

@@ -108,7 +108,7 @@ class ColourSelector:
         
         '''
 
-        with open("src/variables_template.scss", 'r') as vars:
+        with open("DataBuilder/src/variables_template.scss", 'r') as vars:
             top = vars.read()
 
         with open(self.path+"variables.scss", 'w') as vars:

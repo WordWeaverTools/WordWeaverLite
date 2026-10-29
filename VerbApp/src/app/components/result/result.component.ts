@@ -7,6 +7,8 @@ import {
 
 import {
   Result,
+  ResultClass,
+  ResultClassNameIndex,
   ResultMorphemeNameIndex,
   Tier,
 } from "../../models/result.model";
@@ -28,6 +30,10 @@ export class ResultComponent implements OnInit {
 
   output: Result = [];
   morphType: number = ResultMorphemeNameIndex.breakdown;
+  resultIndex: number = ResultClassNameIndex.result;
+  nameIndex: number = ResultClassNameIndex.name;
+  orderIndex: number = ResultClassNameIndex.order;
+
   rawText: string = "";
   constructor(public tts: EveryVoiceService) { }
 

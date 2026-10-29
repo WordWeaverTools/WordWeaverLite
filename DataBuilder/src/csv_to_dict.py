@@ -1,112 +1,83 @@
 import csv
-import os, json
-import codecs
 import sys
-import fileinput
 import textdistance, re
 
 class CSVtoDict:
 
-    def __init__(self, input_file, delimiter=None, order=None):
+    def __init__(self, config):
         """Initalizes relevant variables.
 
         Args:
             input_file (str): Input CSV file to be read and turned into a list 
             of python dictionaries.
         """
-        self.order = order
-        self.input_file = input_file  
+        self.input_file = config.inputFile.path 
+        self.order = config.categoryOrder
+        self.delimiter = config.headerDelimiter
+        self.text_replace = config.replace
+        self.full_tree_order = self.order + config.result.order
         self.list_of_dicts = []
-        self.attr_list_of_dicts = []
+        self.attributes_by_category = []
+        self.category_ids = []
         self.headers = []
-        if delimiter:
-            self.delimiter = delimiter
-        else:
-            self.delimiter = "_"
+        self.config = config
 
+        
 
     def execute(self):
         self.cleanData()
-        self.columnTitles()
-        self.toDict()
-        if os.path.exists(self.input_file):
-            os.remove(self.input_file)
-        self.list_of_dicts = self.removeDupe(self.list_of_dicts)
-        p, a = self.assignRemoveAttributesTitles()
-        if not self.order:
-            self.order = p
-        self.assignRemoveAttributes()
-        return self.list_of_dicts, self.attr_list_of_dicts
+        self.addBreakdownLabel()
+        self.validateCategoryOrder()
+        self.validateCategoryOrder()
+        self.replaceAttributeValueText()
+
+        return self.category_ids, self.attributes_by_category, self.order
 
 
     def cleanData(self):
-        f = open(self.input_file, 'r')
-        firstline = f.readline()
-        firstline = firstline.lower()
-        lines = f.readlines()
-        lines = [firstline] + lines
-        lines = [re.sub(r" ,", ",", line) for line in lines]
-        lines = [re.sub(r", ", ",", line) for line in lines]
-        self.input_file = self.input_file[:self.input_file.find(".csv")] + "_temp.csv"
-        with open(self.input_file, 'w') as out:
-            out.writelines(lines)
+        """Read the CSV, normalize header names, and store rows."""
 
+        with open(self.input_file, "r", encoding="utf-8") as file:
+            reader = csv.DictReader(file)
 
-    def columnTitles(self):
-        """
-        Grabs the column/category titles.
-        """
-        
-        with codecs.open(self.input_file, encoding='UTF-8') as f:
-            reader = csv.reader(f)
-            self.headers = next(reader)
+            self.headers = [
+                re.sub(r"\s*,\s*", ",", header.lower())
+                for header in (reader.fieldnames or [])
+            ]
 
-
-    def toDict(self):
-        """Reads in CSV file and 
-
-        Returns:
-            None
-        """
-        with codecs.open(self.input_file, encoding='UTF-8') as csvfile:
-            scrape_dict = csv.DictReader(csvfile)
-            self.list_of_dicts = [x for x in scrape_dict]
+            self.list_of_dicts = [
+                {
+                    re.sub(r"\s*,\s*", ",", key.lower()): value
+                    for key, value in row.items()
+                }
+                for row in reader
+            ]
+        self.removeDupe()
 
         
-    def removeDupe(self, removeFrom):
+    def removeDupe(self):
         """
         Removes duplicate dictionary entries from the list.
         """
-        s = {tuple(d.items()) for d in removeFrom}
-        return [dict(t) for t in s]
+        self.list_of_dicts = [dict(t) for t in {tuple(d.items()) for d in self.list_of_dicts}]
+        return 
     
 
 
-    def assignRemoveAttributesTitles(self):
+    def validateCategoryOrder(self):
         """
-        If there are columns in the csv files that are attributes of a larger class, this function will
-        appropriately group them in the appropriate dictionary.
-        A column is considered an attribute of another column if it's title is of the following structure:
-        columnname_attributename
-        E.g.verb_translation given that there is a separate column entitled 'verb'.
         """
-        primary = set()
-        attribute = {}
-        headers = set()
-        for col_name in self.headers:
-                if self.delimiter not in col_name:
-                    headers.add(col_name)
 
+        possible_categories = {col_name for col_name in self.headers if self.delimiter not in col_name}
         if self.order:
-            primary = set(self.order)
-            for o in primary:
-                if o not in headers:
+            for cat in self.order:
+                if cat not in possible_categories:
                     print("------------------")
-                    print("[FATAL ERROR]\n{} - Invalid column name. Check order file.".format(o))
+                    print(f"[CSV_TO_DICT] [FATAL ERROR]\n{cat} - Invalid column name. Check order file.")
                     mispelt = list()
-                    for h in headers:
-                        if textdistance.levenshtein(o, h) <=2:
-                            mispelt.append(h)
+                    for poss in possible_categories:
+                        if textdistance.levenshtein(cat, poss) <=2:
+                            mispelt.append(poss)
                     if mispelt:
                         print("Did you mean: {}?\n".format(", ".join(mispelt)))
                     print("------------------")
@@ -114,42 +85,80 @@ class CSVtoDict:
 
             
         else:
-            primary = headers
+            self.order = possible_categories
 
-        for col_name in self.headers:
-            if self.delimiter in col_name:
-                prim_attr = col_name.split(self.delimiter)
-                if prim_attr[0] in primary:
-                    attribute[col_name] = {"primary":prim_attr[0], "attribute":prim_attr[1]}
-
-        return primary, attribute
+                   
+        return 
 
 
-    def assignRemoveAttributes(self):
+    def validateCategoryOrder(self):
         """
         Attributes of the primary categories are redundant in the final tree. They should be removed before the tree is made.
         """
-        primary, attribute = self.assignRemoveAttributesTitles()
-        temp_dicts_list = []
-        for col in self.list_of_dicts:
-            no_attr = {}
-            attr = {}
-            for x in col:
-                if x in primary: 
-                    no_attr[x] = col[x]
-                    if x not in attr:
-                        attr[x] = {}
-                        attr[x]["id"] = col[x]
-                    elif "id" not in attr[x]:
-                        attr[x]["id"] = col[x]
+        
+        for row in self.list_of_dicts:
+            id_only = {}
+            category_attributes = {}
+            for column in row:
+                if column in self.full_tree_order: 
+                    id_only[column] = row[column]
+                    category_attributes.setdefault(column, {}).setdefault("id", row[column])
 
-                if x in attribute:
-                    if attribute[x]["primary"] not in attr:
-                        attr[attribute[x]["primary"]] = {}
-                    attr[attribute[x]["primary"]][attribute[x]["attribute"]] = col[x]
-                    
+                elif self.delimiter in column and column.split(self.delimiter)[0] in self.full_tree_order:
+                    category, attribute = column.split(self.delimiter)
+                    category_attributes.setdefault(category, {}).setdefault(attribute, row[column])
 
-            temp_dicts_list.append(no_attr)
-            self.attr_list_of_dicts.append(attr)
-        self.list_of_dicts = temp_dicts_list
+   
+            self.category_ids.append(id_only)
+            self.attributes_by_category.append(category_attributes)
+
+
+    def replaceAttributeValueText(self):
+        replacements = self.text_replace.__dict__.items()
+
+        for item in self.attributes_by_category:
+            for attributes in item.values():
+                for attr, value in attributes.items():
+                    if attr != "id":
+                        for pattern, new in replacements:
+                            value = re.sub(pattern, new, value)
+                        attributes[attr] = value
+
+        return
+
+
+    def addBreakdownLabel(self):
+        '''
+        If the creater is not using the breaking/label feature and so does not provide breakdown and label columns
+        '''
+        
+        add_keys = {self.config.result.name : {"breakdown":f"{self.config.result.name}{self.delimiter}breakdown", "label":f"{self.config.result.name}{self.delimiter}label"}}
+
+        if hasattr(self.config.result, "subResult"):
+            for subresult in self.config.result.subResult:
+                add_keys[subresult.name] = {"breakdown":f"{subresult.name}{self.delimiter}breakdown", "label":f"{subresult.name}{self.delimiter}label"}
+                
+        fatal = False
+        for item in self.list_of_dicts:
+            for result_key in add_keys:
+                if result_key not in item.keys():
+                    if add_keys[result_key]["breakdown"] not in item.keys():
+                        print(f"[CSV_TO_DICT] [FATAL] Specified result column not found \n\t\t[missing `{result_key}` or `{add_keys[result_key]['breakdown']}` columns. Please provide at least one.]")
+                        fatal = True
+                        continue
+                    else:
+                        item[result_key] = str(item[add_keys[result_key]["breakdown"]])
+
+                elif add_keys[result_key]["breakdown"] not in item.keys():
+                    item[add_keys[result_key]["breakdown"]] = item[result_key]
+
+                item.setdefault(add_keys[result_key]["label"], "")
+            if fatal:
+                exit()
+
+
+            
+            
+
+                
 
