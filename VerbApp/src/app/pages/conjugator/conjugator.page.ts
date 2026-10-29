@@ -33,7 +33,7 @@ export class ConjugatorPage implements OnInit {
   myFunInformation$ = new BehaviorSubject(this.information);
   selectedOptions: { [id: string]: { translation: string, id: string, base: string } } = {};
   selectedPath: { [id: string]: node } = {};
-  tier = TIERS[0];
+  tier = TIERS[1];
 
   constructor(private modalController: ModalController, private service: DataService) { }
 
