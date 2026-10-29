@@ -24,7 +24,7 @@ describe('AuthButtonComponent', () => {
         }).compileComponents();
 
         fixture = TestBed.createComponent(AuthButtonComponent);
-        component = fixture.debugElement.componentInstance;
+        component = fixture.componentInstance;
         fixture.detectChanges();
     });
 

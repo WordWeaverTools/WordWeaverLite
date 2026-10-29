@@ -2,21 +2,30 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
+
+import { EveryVoiceConfig } from "@everyvoice/every-voice";
+
+export const everyVoiceConfig: EveryVoiceConfig = {
+  enableTTS: true,
+  requiresAuth: true,
+  apiUrl: "",
+  availableSpeakers: [{ display: "", slug: "" }], // Optional: Available Speaker IDs for TTS
+  defaultSpeaker: { display: "", slug: "" }, // Optional: Speaker ID for TTS
+  diffusionSteps: 3, // Optional: Number of steps for TTS
+  domain: "", // Optional: Auth0 Domain
+  clientId: "", // Optional: Auth0 ClientId
+  middlewareEndpoint: "", // Optional: Middleware endpoint
+  audience: "", // Optional: Auth0 audience
+}
+
+
 export const environment = {
   production: false,
-  ttsConfig: {
-    apiUrl: "https://unbq-sgile-text-to-speech.hf.space", // 👈 your TTS backend endpoint
-    enableTTS: true, // 👈 set this to false if you want to disable your TTS in certain deployment environments. Note, if this is disabled, your EveryVoice components will not render and TTS will not be accessible from your application.
-    developmentBearerToken: "", // 👈 OPTIONAL authentication token if required by your API. It will be treated as an Authorization Bearer token
-    speakerID: "tina", // 👈 OPTIONAL speaker id.
-    requiresAuth: true,
-    diffusionSteps: 3, // 👈  OPTIONAL: number of diffusion steps
-    middlewareEndpoint: "http://localhost:3000/tts",
-    domain: "unbq-everyvoice.ca.auth0.com",
-    clientId: "7jLB2de2XqEGsAbXLEnUjB49P35r8gQH",
-    audience: "https://unbq.everyvoice.middleware.ca",
-  },
+  ttsConfig: everyVoiceConfig,
 };
+
+
+
 
 /*
  * For easier debugging in development mode, you can import the following file

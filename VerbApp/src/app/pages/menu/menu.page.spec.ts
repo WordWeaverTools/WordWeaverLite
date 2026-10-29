@@ -1,10 +1,17 @@
 import { FormsModule } from '@angular/forms';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, Config } from '@ionic/angular';
 import { Router, RouterEvent } from '@angular/router';
 import { MenuPage } from './menu.page';
 import { RouterModule } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+
+// Mock Ionic Config
+const mockConfig = {
+  get: jest.fn(),
+  getBoolean: jest.fn().mockReturnValue(false),
+  getNumber: jest.fn()
+};
 
 describe('MenuPage', () => {
   let component: MenuPage;
@@ -12,9 +19,11 @@ describe('MenuPage', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ MenuPage ],
+      declarations: [MenuPage],
       imports: [IonicModule.forRoot(), FormsModule, RouterModule, RouterTestingModule],
-      // providers: [ Router ],
+      providers: [
+        { provide: Config, useValue: mockConfig }
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MenuPage);

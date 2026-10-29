@@ -72,7 +72,7 @@ describe('AppComponent', () => { // describe creates a block that groups togethe
     }).compileComponents();
 
     fixture = TestBed.createComponent(AppComponent);
-    app = fixture.debugElement.componentInstance;
+    app = fixture.componentInstance;
   });
 
   it('should create the app', () => {
