@@ -26,13 +26,14 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
 
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: 22
+          node-version: 24.19.0
           cache: npm
+          cache-dependency-path: VerbApp/package-lock.json
 
       - name: Install dependencies
         working-directory: ./VerbApp/
@@ -90,7 +91,7 @@ jobs:
         run: |
           echo "## Pages Deployment" >> $GITHUB_STEP_SUMMARY
 
-          wrangler pages deploy dist/auth0-angular/browser \
+          wrangler pages deploy www/ \
             --project-name "${{ inputs.project_name }}" | tee pages-output.txt
 
           echo '```' >> $GITHUB_STEP_SUMMARY
