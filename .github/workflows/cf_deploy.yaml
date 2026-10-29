@@ -1,0 +1,120 @@
+name: Deploy WWLite Web App
+
+on:
+  workflow_dispatch:
+    inputs:
+      project_name:
+        description: "Cloudflare Pages project name"
+        required: true
+        default: "ww-lite"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      PROJECT_NAME: ${{ inputs.project_name }}
+
+    steps:
+      - name: Initialize workflow summary
+        run: |
+          echo "# 🚀 Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Project:** ${{ inputs.project_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Triggered by:** ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        working-directory: ./VerbApp/
+        run: |
+          npm ci --force
+          npm install -g ionic
+          echo "✅ Dependencies installed" >> $GITHUB_STEP_SUMMARY
+
+      - name: Build Angular app
+        id: angular_build
+        working-directory: ./VerbApp/
+        run: |
+          ionic build --prod -- --base-href ./ --output-path=../deploy/
+          echo "## Ionic Build" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Ionic build completed successfully" >> $GITHUB_STEP_SUMMARY
+
+      - name: Install Wrangler
+        run: |
+          npm install --global wrangler
+          echo "## Wrangler" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Wrangler installed" >> $GITHUB_STEP_SUMMARY
+
+      #
+      # Pages
+      #
+
+      - name: Create or reuse Cloudflare Pages project
+        id: pages_project
+        run: |
+          echo "## Pages Project Setup" >> $GITHUB_STEP_SUMMARY
+
+          PROJECT_NAME="${{ inputs.project_name }}"
+
+          echo "Checking if Pages project exists: $PROJECT_NAME"
+
+          if wrangler pages project list | grep -q "$PROJECT_NAME"; then
+            echo "✅ Pages project already exists"
+            echo "Project '$PROJECT_NAME' already exists. Will deploy updates." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "Creating Pages project..."
+            
+            wrangler pages project create "$PROJECT_NAME" \
+              --production-branch main
+
+            echo "✅ Pages project created"
+            echo "Created new Pages project '$PROJECT_NAME'." >> $GITHUB_STEP_SUMMARY
+          fi
+
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Deploy Ionic App to Cloudflare Pages
+        id: pages_deploy
+        run: |
+          echo "## Pages Deployment" >> $GITHUB_STEP_SUMMARY
+
+          wrangler pages deploy dist/auth0-angular/browser \
+            --project-name "${{ inputs.project_name }}" | tee pages-output.txt
+
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          cat pages-output.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      #
+      # Final summary even if something failed
+      #
+
+      - name: Final deployment summary
+        if: always()
+        run: |
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Final Status" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ job.status }}" = "success" ]; then
+            echo "✅ Deployment completed successfully" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Deployment failed" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "Check the failed step logs above for details." >> $GITHUB_STEP_SUMMARY
+          fi

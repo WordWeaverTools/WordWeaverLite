@@ -1,0 +1,64 @@
+name: Build Data
+
+on:
+  workflow_dispatch:
+#   push:
+#     branches:
+#       - main
+
+permissions:
+  contents: write
+
+jobs:
+  build-data:
+    #concurrency: ci-${{ github.ref }} # Recommended if you intend to make multiple deployments in quick succession.
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+
+      - name: Python
+        uses: actions/setup-python@v5
+        with:
+          # Semantic version range syntax or exact version of a Python version
+          python-version: "3.8"
+
+      - name: Install
+        working-directory: ./DataBuilder/
+        run: |
+          pip install --upgrade pip==24.0
+          pip install -r requirements.txt
+
+      - name: Build 🔧
+        run: |
+          python DataBuilder/src/main.py -f config/config.example.json 2>&1 | tee build.log
+          EXIT_CODE=${PIPESTATUS[0]}
+          {
+            echo "## Data Structuring:"
+            cat build.log
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if [ "$EXIT_CODE" -eq 1 ]; then
+            echo "Python script exited with code 1."
+            exit 1
+          fi
+
+          exit "$EXIT_CODE"
+
+      - name: Commit and Push
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+          # Stage all new and changed files
+          git add .
+
+          # Only commit and push if there are actual changes to prevent workflow errors
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: auto-generated files [skip ci]"
+            git push
+          else
+            echo "No changes to commit"
+          fi
