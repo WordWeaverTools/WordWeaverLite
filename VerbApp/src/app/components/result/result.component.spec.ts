@@ -99,30 +99,32 @@ describe('ResultComponent', () => {
       });
     });
     // TODO: Implement morpheme separation first then test
-    // describe('dash sepatory', () => {
-    //   it('should create rawText by joining morphemes together', () => {
-    //     component.tier = mockTierWithSep;
-    //     component.ngOnInit();
-    //     // todo: pick up back here
-    //     expect(component.rawText).toBe('see-ing');
-    //   });
-    // });
+    /*
+    describe('dash sepatory', () => {
+      it('should create rawText by joining morphemes together', () => {
+        component.tier = mockTierWithSep;
+        component.ngOnInit();
+        // todo: pick up back here
+        expect(component.rawText).toBe('see-ing');
+      });
+    });
 
-    // it('should render separators between morphemes (except last)', () => {
-    //   component.tier = mockTierWithSep;
-    //   component.ngOnInit();
-    //   fixture.detectChanges();
+    it('should render separators between morphemes (except last)', () => {
+      component.tier = mockTierWithSep;
+      component.ngOnInit();
+      fixture.detectChanges();
 
-    //   const separators = fixture.nativeElement.querySelectorAll('.separator');
-    //   expect(separators.length).toBe(1);
-    // });
+      const separators = fixture.nativeElement.querySelectorAll('.separator');
+      expect(separators.length).toBe(1);
+    });
 
 
-    // it('should not render separator after last morpheme', () => {
-    //   const lastSeparator = fixture.nativeElement.querySelectorAll('.separator');
-    //   const allSpans = fixture.nativeElement.querySelectorAll('span');
-    //   expect(lastSeparator.length).toBe(mockData.length - 1);
-    // });
+    it('should not render separator after last morpheme', () => {
+      const lastSeparator = fixture.nativeElement.querySelectorAll('.separator');
+      const allSpans = fixture.nativeElement.querySelectorAll('span');
+      expect(lastSeparator.length).toBe(mockData.length - 1);
+    });
+    */
   });
 
   describe('Template Rendering', () => {
