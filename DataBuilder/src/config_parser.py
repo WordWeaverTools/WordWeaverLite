@@ -108,5 +108,4 @@ class ConfigParser:
             if hasattr(self.config.result, "subResult"):
                 self.config.result.order += [sr.name for sr in self.config.result.subResult]
 
-        print(self.config.result)
 

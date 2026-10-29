@@ -19,7 +19,7 @@ class DataBuilder:
         self.tree_order = None
         self.conjugation_order = None
         self.config = None
-        self.JSON_path = "JSON/"
+        self.JSON_path = "DataBuilder/JSON/"
         self.color_path = ""
         self.result = "text"
         self.delimiter = "_"
@@ -43,8 +43,8 @@ class DataBuilder:
         # if arguments.args.autoplace: 
         if hasattr(self.config, "autoPlace"):
             if self.config.autoPlace:
-                self.JSON_path = "../VerbApp/src/assets/JSON/"
-                self.colour_path = "../VerbApp/src/theme/"
+                self.JSON_path = "VerbApp/src/assets/JSON/"
+                self.colour_path = "VerbApp/src/theme/"
 
         # If a tooltips file was requested, create the template
         # TODO: This needs to be moved to last so that there is a tree order to go off if incase none was provided
@@ -62,9 +62,11 @@ class DataBuilder:
         #         ColourSelector(tree_order, self.colour_path,colour_info)
         #     #otherwise the default will be used
         #     else:
-        #         ColourSelector(tree_order, self.colour_path)
+                # ColourSelector(tree_order, self.colour_path)
+        
 
         tree_order = self.buildFiles()
+        ColourSelector(self.config.categoryOrder, self.colour_path)
         FileReadWrite.reorderJSON(tree_order, self.JSON_path)
 
         if hasattr(self.config, "test"):

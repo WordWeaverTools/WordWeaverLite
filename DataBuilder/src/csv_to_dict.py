@@ -20,12 +20,13 @@ class CSVtoDict:
         self.attributes_by_category = []
         self.category_ids = []
         self.headers = []
+        self.config = config
 
         
 
     def execute(self):
         self.cleanData()
-
+        self.addBreakdownLabel()
         self.validateCategoryOrder()
         self.validateCategoryOrder()
         self.replaceAttributeValueText()
@@ -126,6 +127,38 @@ class CSVtoDict:
         return
 
 
+    def addBreakdownLabel(self):
+        '''
+        If the creater is not using the breaking/label feature and so does not provide breakdown and label columns
+        '''
+        
+        add_keys = {self.config.result.name : {"breakdown":f"{self.config.result.name}{self.delimiter}breakdown", "label":f"{self.config.result.name}{self.delimiter}label"}}
+
+        if hasattr(self.config.result, "subResult"):
+            for subresult in self.config.result.subResult:
+                add_keys[subresult.name] = {"breakdown":f"{subresult.name}{self.delimiter}breakdown", "label":f"{subresult.name}{self.delimiter}label"}
+                
+        fatal = False
+        for item in self.list_of_dicts:
+            for result_key in add_keys:
+                if result_key not in item.keys():
+                    if add_keys[result_key]["breakdown"] not in item.keys():
+                        print(f"[CSV_TO_DICT] [FATAL] Specified result column not found \n\t\t[missing `{result_key}` or `{add_keys[result_key]['breakdown']}` columns. Please provide at least one.]")
+                        fatal = True
+                        continue
+                    else:
+                        item[result_key] = str(item[add_keys[result_key]["breakdown"]])
+
+                elif add_keys[result_key]["breakdown"] not in item.keys():
+                    item[add_keys[result_key]["breakdown"]] = item[result_key]
+
+                item.setdefault(add_keys[result_key]["label"], "")
+            if fatal:
+                exit()
+
+
+            
+            
 
                 
 
