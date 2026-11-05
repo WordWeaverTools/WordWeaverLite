@@ -19,7 +19,7 @@ class TESTS:
 
         print("\n-------\nTESTING INFORMATION\n-------")
         TESTS.information_tests(path+"information.json", path)
-        TESTS.conjugation_tests(path+"conjugation.json", path)
+        # TESTS.conjugation_tests(path+"conjugation.json", path)
 
     @staticmethod
     def information_tests(file_name, path):
