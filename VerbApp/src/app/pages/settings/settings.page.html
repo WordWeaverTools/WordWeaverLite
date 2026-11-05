@@ -6,8 +6,8 @@
                 offset-sm="2" size-md="6" offset-md="3" size-xl="4"
                 offset-xl="4">
 
-                <div class="title-container">
-                    <h2 class="title"><strong>Add to Home Screen</strong></h2>
+                <div class="disabled-container title-container">
+                    <h2 class="title"><strong>Add to Home Screen (Coming Soon)</strong></h2>
                     <h3 class="title"><strong>For Offline Use</strong></h3>
                     <div *ngIf="showInstallButton">
                         <p>To use this application offline, press the "add"
@@ -31,7 +31,7 @@
 
                 </div>
 
-                <div class="title-container">
+                <div *ngIf="showAudioLogin class="title-container">
                     <h2 class="title"><strong>Auto-generated Audio</strong></h2>
 
                     <div *ngIf="(auth.isAuthenticated$ | async) === false">
