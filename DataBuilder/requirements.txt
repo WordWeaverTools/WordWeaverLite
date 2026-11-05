@@ -49,3 +49,4 @@ termcolor==2.2.0
     # via -r requirements.in
 textdistance==4.4.0
     # via -r requirements.in
+PyYAML==6.0.3

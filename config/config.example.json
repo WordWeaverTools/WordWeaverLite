@@ -3,7 +3,7 @@
     "#": " "
   },
   "test": true,
-  "autoPlace": false,
+  "autoPlace": true,
   "inputFile": {
     "path": "Data/example.csv",
     "format": "csv"
@@ -11,13 +11,10 @@
   "result": {
     "name": "text",
     "delimiter": "_",
-    "breakdown": true,
-    "label": true,
+    "order": ["gloss", "text"],
     "subResult": [
       {
-        "name": "gloss",
-        "breakdown": false,
-        "label": false
+        "name": "gloss"
       }
     ]
   },

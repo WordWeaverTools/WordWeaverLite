@@ -7,6 +7,17 @@
 
 }
 
+.disabled-container {
+    /* Greys out the container visually */
+    opacity: 0.6;
+    
+    /* Blocks all mouse clicks, hovers, and pointer events */
+    pointer-events: none;
+    
+    /* Prevents users from selecting text inside */
+    user-select: none;
+}
+
 h6,h2{
     // padding: 15px 10px !important;
     text-align: center;

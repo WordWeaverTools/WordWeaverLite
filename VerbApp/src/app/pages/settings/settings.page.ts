@@ -13,7 +13,7 @@ import { environment } from "../../../environments/environment";
 })
 export class SettingsPage implements OnInit {
   defaultSpeaker: Speaker = environment.ttsConfig.defaultSpeaker;
-
+  showAudioLogin: Boolean = environment.ttsConfig.enableTTS;
   showInstallButton: Boolean = false;
   browser: String = "";
   loginError?: string;

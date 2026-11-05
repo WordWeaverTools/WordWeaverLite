@@ -6,7 +6,7 @@
 import { EveryVoiceConfig } from "@everyvoice/every-voice";
 
 export const everyVoiceConfig: EveryVoiceConfig = {
-  enableTTS: true,
+  enableTTS: false,
   requiresAuth: true,
   apiUrl: "",
   availableSpeakers: [{ display: "", slug: "" }], // Optional: Available Speaker IDs for TTS

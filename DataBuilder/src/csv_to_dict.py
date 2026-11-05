@@ -25,10 +25,10 @@ class CSVtoDict:
         
 
     def execute(self):
-        self.cleanData()
+        possible_categories = self.cleanData()
         self.addBreakdownLabel()
-        self.validateCategoryOrder()
-        self.validateCategoryOrder()
+        self.validateCategoryOrder(possible_categories)
+        self.groupAttributesByCategory()
         self.replaceAttributeValueText()
 
         return self.category_ids, self.attributes_by_category, self.order
@@ -52,7 +52,13 @@ class CSVtoDict:
                 }
                 for row in reader
             ]
+        possible_categories = {col_name for col_name in self.headers if self.delimiter not in col_name}
+        if not self.order:
+            self.order = possible_categories
+            self.full_tree_order = self.order + self.full_tree_order
         self.removeDupe()
+
+        return possible_categories
 
         
     def removeDupe(self):
@@ -64,36 +70,28 @@ class CSVtoDict:
     
 
 
-    def validateCategoryOrder(self):
+    def validateCategoryOrder(self,possible_categories):
         """
         """
 
-        possible_categories = {col_name for col_name in self.headers if self.delimiter not in col_name}
-        if self.order:
-            for cat in self.order:
-                if cat not in possible_categories:
-                    print("------------------")
-                    print(f"[CSV_TO_DICT] [FATAL ERROR]\n{cat} - Invalid column name. Check order file.")
-                    mispelt = list()
-                    for poss in possible_categories:
-                        if textdistance.levenshtein(cat, poss) <=2:
-                            mispelt.append(poss)
-                    if mispelt:
-                        print("Did you mean: {}?\n".format(", ".join(mispelt)))
-                    print("------------------")
-                    sys.exit()
+        for cat in self.order:
+            if cat not in possible_categories:
+                print("------------------")
+                print(f"[CSV_TO_DICT] [FATAL ERROR]\n{cat} - Invalid column name. Check order file.")
+                mispelt = list()
+                for poss in possible_categories:
+                    if textdistance.levenshtein(cat, poss) <=2:
+                        mispelt.append(poss)
+                if mispelt:
+                    print("Did you mean: {}?\n".format(", ".join(mispelt)))
+                print("------------------")
+                sys.exit()
 
-            
-        else:
-            self.order = possible_categories
-
-                   
         return 
 
 
-    def validateCategoryOrder(self):
+    def groupAttributesByCategory(self):
         """
-        Attributes of the primary categories are redundant in the final tree. They should be removed before the tree is made.
         """
         
         for row in self.list_of_dicts:
@@ -133,7 +131,7 @@ class CSVtoDict:
         '''
         
         add_keys = {self.config.result.name : {"breakdown":f"{self.config.result.name}{self.delimiter}breakdown", "label":f"{self.config.result.name}{self.delimiter}label"}}
-
+        uneven_label_bk = list()
         if hasattr(self.config.result, "subResult"):
             for subresult in self.config.result.subResult:
                 add_keys[subresult.name] = {"breakdown":f"{subresult.name}{self.delimiter}breakdown", "label":f"{subresult.name}{self.delimiter}label"}
@@ -143,7 +141,7 @@ class CSVtoDict:
             for result_key in add_keys:
                 if result_key not in item.keys():
                     if add_keys[result_key]["breakdown"] not in item.keys():
-                        print(f"[CSV_TO_DICT] [FATAL] Specified result column not found \n\t\t[missing `{result_key}` or `{add_keys[result_key]['breakdown']}` columns. Please provide at least one.]")
+                        print(f"[CSVtoDictDICT] [FATAL] Specified result column not found \n\t\t[missing `{result_key}` or `{add_keys[result_key]['breakdown']}` columns. Please provide at least one.]")
                         fatal = True
                         continue
                     else:
@@ -153,8 +151,23 @@ class CSVtoDict:
                     item[add_keys[result_key]["breakdown"]] = item[result_key]
 
                 item.setdefault(add_keys[result_key]["label"], "")
+
+                if len(item[add_keys[result_key]["label"]].split(self.delimiter)) != len(item[add_keys[result_key]["breakdown"]].split(self.delimiter)):
+                    uneven_label_bk.append([add_keys[result_key]["breakdown"],add_keys[result_key]["label"],item])
+            
+            
             if fatal:
-                exit()
+                exit()  
+
+        if uneven_label_bk:
+            print(f"[CSVtoDictDICT] [FATAL] {len(uneven_label_bk)} result(s) or subresult(s) have uneven breakdown and label lengths. Please fix before trying again.")
+            for i in range(min(len(uneven_label_bk),3)):
+                print(f"\t{i+1}. {uneven_label_bk[i][0]} and {uneven_label_bk[i][1]} uneven length in row")
+                for cat in set(self.full_tree_order+uneven_label_bk[i][:2]):
+                    print(f"\t\t{cat}: {uneven_label_bk[i][2][cat]}")
+            if i < len(uneven_label_bk) - 1:
+                print(f"\t{i+2}. [. . .] \n\t\t.\n\t\t.\n\t\t.\n")
+            exit()
 
 
             
