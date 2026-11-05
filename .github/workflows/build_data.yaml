@@ -23,7 +23,7 @@ jobs:
       - name: Checkout 🛎️
         uses: actions/checkout@v3
         with:
-          persist-credentials: false
+          persist-credentials: true
 
       - name: Python
         uses: actions/setup-python@v5
