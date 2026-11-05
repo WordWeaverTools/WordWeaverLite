@@ -1,4 +1,4 @@
-name: Deploy WWLite Web App
+name: Deploy To Cloudflare
 
 on:
   workflow_dispatch:
@@ -8,12 +8,22 @@ on:
         required: true
         default: "ww-lite"
 
+
+
+  workflow_run:
+    workflows: ["Build Data"]
+    types:
+      - completed
+
+
 jobs:
   deploy:
+    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run.event == 'push' && github.event.workflow_run.conclusion == 'success')
     runs-on: ubuntu-latest
 
     env:
       PROJECT_NAME: ${{ inputs.project_name }}
+      DEPLOY_BRANCH: ${{ github.ref_name }}
 
     steps:
       - name: Initialize workflow summary
@@ -46,7 +56,7 @@ jobs:
         id: angular_build
         working-directory: ./VerbApp/
         run: |
-          ionic build --prod -- --base-href ./ --output-path=../deploy/
+          ionic build --prod -- --base-href ./ --output-path=../www/
           echo "## Ionic Build" >> $GITHUB_STEP_SUMMARY
           echo "✅ Ionic build completed successfully" >> $GITHUB_STEP_SUMMARY
 
@@ -89,10 +99,14 @@ jobs:
       - name: Deploy Ionic App to Cloudflare Pages
         id: pages_deploy
         run: |
+          set -o pipefail
           echo "## Pages Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "**Deployment branch:** $DEPLOY_BRANCH" >> "$GITHUB_STEP_SUMMARY"
 
           wrangler pages deploy www/ \
-            --project-name "${{ inputs.project_name }}" | tee pages-output.txt
+            --project-name "$PROJECT_NAME" \
+            --branch "$DEPLOY_BRANCH" \
+            2>&1 | tee pages-output.txt
 
           echo '```' >> $GITHUB_STEP_SUMMARY
           cat pages-output.txt >> $GITHUB_STEP_SUMMARY

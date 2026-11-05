@@ -2,9 +2,15 @@ name: Build Data
 
 on:
   workflow_dispatch:
-#   push:
-#     branches:
-#       - main
+    inputs:
+      config_file:
+        description: "Config file name"
+        required: true
+        default: "config.example.json"
+
+  push:
+    branches-ignore:
+      - main
 
 permissions:
   contents: write
