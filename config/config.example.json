@@ -1,58 +1,98 @@
 {
-  "replace": {
-    "#": " "
+  "configVersion": 1,
+  "dataConfig": {
+    "replace": {
+      "#": " "
+    },
+    "test": true,
+    "autoPlace": true,
+    "inputFile": {
+      "path": "Data/example.csv",
+      "format": "csv"
+    },
+    "result": {
+      "name": "text",
+      "delimiter": "_",
+      "order": ["text", "gloss"],
+      "subResult": [
+        {
+          "name": "gloss"
+        }
+      ]
+    },
+    "categoryOrder": ["noun", "verb", "pronoun"],
+    "headerDelimiter": "_"
   },
-  "test": true,
-  "autoPlace": true,
-  "inputFile": {
-    "path": "Data/example.csv",
-    "format": "csv"
+  "siteConfig": {
+    "title": "ww-lite",
+    "categoryDisplay": { 
+      "verb": {
+        "label": "Verb",
+        "selectionLabel": "Choose a",
+        "description": "The action word",
+        "styles": {
+          "color": "#E980FC"
+        }
+    }, 
+    "noun": {
+        "label": "Noun",
+        "selectionLabel": "Choose a",
+        "description": "Person, place, or thing",
+        "styles": {
+          "color": "#FFD2FC"
+        }
+    }, 
+    "pronoun": {
+        "label": "Pronoun",
+        "selectionLabel": "Choose a",
+        "description": "Replaces a person, place, or thing.",
+        "styles": {
+          "color": "#DDFFF7"
+        }
+    } 
   },
-  "result": {
-    "name": "text",
-    "delimiter": "_",
-    "order": ["gloss", "text"],
-    "subResult": [
+  "otherDisplay": {
+    "gloss":
+    {
+      "label":"Gloss",
+      "description": "linguistic breakdown",
+      "styles":{
+      }
+    }
+  },
+    "orthography": [
       {
-        "name": "gloss"
+        "name": "standard roman orthography",
+        "shorthand": "sro",
+        "order": [
+          "a",
+          "b",
+          "c",
+          "d",
+          "e",
+          "f",
+          "g",
+          "h",
+          "i",
+          "j",
+          "k",
+          "l",
+          "m",
+          "n",
+          "o",
+          "p",
+          "q",
+          "r",
+          "s",
+          "t",
+          "u",
+          "v",
+          "w",
+          "x",
+          "y",
+          "z"
+        ]
       }
     ]
-  },
-  "categories": { "verb": {}, "noun": {}, "pronoun": {} },
-  "categoryOrder": ["noun", "verb", "pronoun"],
-  "headerDelimiter": "_",
-  "orthography": [
-    {
-      "name": "standard roman orthography",
-      "shorthand": "sro",
-      "order": [
-        "a",
-        "b",
-        "c",
-        "d",
-        "e",
-        "f",
-        "g",
-        "h",
-        "i",
-        "j",
-        "k",
-        "l",
-        "m",
-        "n",
-        "o",
-        "p",
-        "q",
-        "r",
-        "s",
-        "t",
-        "u",
-        "v",
-        "w",
-        "x",
-        "y",
-        "z"
-      ]
-    }
-  ]
+  }
 }
